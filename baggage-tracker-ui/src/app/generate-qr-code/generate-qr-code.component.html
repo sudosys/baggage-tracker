@@ -1,0 +1,11 @@
+<header></header>
+
+<subheader iconName="qr_code" text="Generate QR Code"></subheader>
+
+<div id="formArea">
+    <mat-form-field  appearance="fill">
+        <mat-label>Flight Number</mat-label>
+        <input matInput required [(ngModel)]="this.flightNumber">
+    </mat-form-field>
+    <button mat-raised-button (click)="generateOnClick()"><mat-icon>precision_manufacturing</mat-icon> Generate QR Code</button>
+</div>

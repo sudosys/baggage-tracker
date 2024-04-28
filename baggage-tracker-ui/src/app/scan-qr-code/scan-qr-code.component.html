@@ -1,0 +1,12 @@
+<header></header>
+<mat-divider></mat-divider>
+<subheader iconName="qr_code_scanner" text="Scan Baggage QR Code"></subheader>
+
+<div id="scannerContainer">
+    <zxing-scanner
+    [enable]="this.scannerActive"
+    (scanSuccess)="qrCodeScanSuccess($event)"
+    ></zxing-scanner>
+    
+    <h2>{{this.scanStatus}}</h2>
+</div>

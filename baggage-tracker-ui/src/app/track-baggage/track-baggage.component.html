@@ -1,0 +1,8 @@
+<header></header>
+
+<subheader iconName="luggage" text="Track Baggage Status"></subheader>
+
+<h1>{{this.baggages[0].flightNumber}}</h1>
+
+<h3>Tag Number<span class="rightSide">Status</span></h3>
+<h3 *ngFor="let baggage of baggages"><b>{{baggage.tagnumber}}</b> <span class="rightSide">{{baggage.status}}</span></h3>

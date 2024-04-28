@@ -1,0 +1,10 @@
+#header {
+    background-color: slategrey;
+}
+
+#header p {
+    width: auto;
+    margin: 0 auto;
+    /* font-style: italic; */
+    padding-left: 5px;
+}

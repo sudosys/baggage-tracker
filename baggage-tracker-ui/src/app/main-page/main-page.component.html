@@ -1,0 +1,25 @@
+<header></header>
+
+<div id="greeting">
+    <h1 id="greeting" *ngIf="!this.isAdmin">Hi, {{this.userData[0].name}}!</h1>
+    <h1 id="greeting" *ngIf="this.isAdmin">Staff Mode</h1>
+    <h1>How may I help you?</h1>
+</div>
+
+<div id="buttonContainer">
+    <button mat-raised-button (click)="navigateScanQrCode()"><mat-icon>qr_code_scanner</mat-icon> Scan Baggage QR Code</button>
+    <div *ngIf="!this.isAdmin">
+        <button mat-raised-button (click)="navigateTrackBaggage()"><mat-icon>luggage</mat-icon> Track Baggage Status</button>
+        <button mat-raised-button (click)="navigateGetHelp()"><mat-icon>help</mat-icon> Get Help</button>
+    </div>
+    <div *ngIf="this.isAdmin">
+        <button mat-raised-button (click)="navigateGenerateQrCode()"><mat-icon>qr_code</mat-icon> Generate QR Code</button>
+    </div>
+</div>
+
+<mat-form-field id="userSelection" appearance="fill">
+    <mat-label>Select User:</mat-label>
+    <mat-select (selectionChange)="userSelection($event.value)">
+        <mat-option *ngFor="let user of this.demoUsers" [value]="[user.username, user.flightnumber]">{{user.username}}</mat-option>
+    </mat-select>
+</mat-form-field>
