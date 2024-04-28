@@ -1,6 +1,6 @@
-import { BaggageService } from './../services/baggage.service';
+import { BaggageService } from '../services/baggage-service/baggage.service';
 import { Component, OnInit } from '@angular/core';
-import { InternalDataService } from '../services/internal-data.service';
+import { InternalDataService } from '../services/internal-data-service/internal-data.service';
 import { Router } from '@angular/router';
 
 @Component({

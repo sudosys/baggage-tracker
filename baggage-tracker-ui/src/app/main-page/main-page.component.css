@@ -1,29 +1,3 @@
-#greeting {
-    font-size: 32px;
-    text-align: center;
-    margin-top: 75px;
-}
-
-#buttonContainer {
-    width: 300px;
-    height: 500px;
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
 button {
     background-color: #ef2e1f;
-    width: 100%;
-    margin: 0 auto;
-    margin-top: 100px;
-}
-
-#userSelection {
-    position: fixed;
-    bottom: 50px;
-    width: 100%;
 }

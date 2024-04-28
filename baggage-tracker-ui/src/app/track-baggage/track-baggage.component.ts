@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BaggageService } from './../services/baggage.service';
-import { InternalDataService } from './../services/internal-data.service';
+import { BaggageService } from '../services/baggage-service/baggage.service';
+import { InternalDataService } from '../services/internal-data-service/internal-data.service';
 
 interface Baggage {
     flightNumber: string;
@@ -23,7 +23,7 @@ export class TrackBaggageComponent implements OnInit {
 
     ngOnInit(): void {
         this.baggageService
-            .checkBaggageStatus(this.dataService.getUserData()[0].passangerHash)
+            .checkBaggageStatus(this.dataService.getUserData()[0].passengerHash)
             .subscribe((data: any) => {
                 this.baggages = data.map((element: any) => {
                     return {

@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { InternalDataService } from '../services/internal-data.service';
-import { QrCodeService } from '../services/qr-code.service';
+import { InternalDataService } from '../services/internal-data-service/internal-data.service';
+import { QrCodeService } from '../services/qr-code-service/qr-code.service';
 
 @Component({
     selector: 'app-scan-qr-code',
@@ -9,9 +9,8 @@ import { QrCodeService } from '../services/qr-code.service';
     styleUrls: ['./scan-qr-code.component.css'],
 })
 export class ScanQrCodeComponent implements OnInit {
-    qrCodeContent: string;
     scannerActive: boolean;
-    scanStatus: string;
+    scanStatusText: string;
     baggagePossession: boolean;
 
     constructor(
@@ -24,20 +23,19 @@ export class ScanQrCodeComponent implements OnInit {
         this.scannerActive = true;
         this.baggagePossession = false;
         setTimeout(() => {
-            this.scanStatus = 'Looking for QR code';
+            this.scanStatusText = 'Looking for QR code...';
         }, 1000);
     }
 
-    qrCodeScanSuccess(Ubc: string) {
-        this.qrCodeService.sendQRCodeContent(Ubc, this.dataService.getPassangerHash()).subscribe((data: any) => {
-            this.baggagePossession = data;
+    async onQrCodeScanSuccess(Ubc: string) {
+        this.qrCodeService.sendQRCodeContent(Ubc, this.dataService.getPassengerHash()).subscribe((data: any) => {
+            this.dataService.setBaggagePossession(data);
         });
         setTimeout(() => {
             this.dataService.setUbc(Ubc);
-            this.dataService.setBaggagePossession(this.baggagePossession);
         }, 150);
         this.scannerActive = false;
-        this.scanStatus = '';
-        this.route.navigateByUrl('/after-scan');
+        this.scanStatusText = '';
+        await this.route.navigateByUrl('/after-scan');
     }
 }

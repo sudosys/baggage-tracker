@@ -1,4 +1,4 @@
-import { apiURL } from './../../environments/environment';
+import { apiURL } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -12,7 +12,7 @@ export class QrCodeService {
         return this.http.get<any>(apiURL + '/QRCodeGenerator/GenerateQR?Flightnum=' + flightnum);
     }
 
-    sendQRCodeContent(Ubc: string, passangerHash: string): any {
-        return this.http.get(apiURL + '/Baggage/CheckBaggagePossession?Ubc=' + Ubc + '&PassangerHash=' + passangerHash);
+    sendQRCodeContent(Ubc: string, passengerHash: string): any {
+        return this.http.get(apiURL + '/Baggage/CheckBaggagePossession?Ubc=' + Ubc + '&PassengerHash=' + passengerHash);
     }
 }

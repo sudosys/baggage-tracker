@@ -1,4 +1,3 @@
-import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -24,15 +23,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { GenerateQrCodeComponent } from './generate-qr-code/generate-qr-code.component';
 import { TrackBaggageComponent } from './track-baggage/track-baggage.component';
 import { GetHelpComponent } from './get-help/get-help.component';
-
-const appRoutes: Routes = [
-    { path: '', component: MainPageComponent },
-    { path: 'scan-qr-code', component: ScanQrCodeComponent },
-    { path: 'after-scan', component: AfterScanComponent },
-    { path: 'track-baggage', component: TrackBaggageComponent },
-    { path: 'generate-qr-code', component: GenerateQrCodeComponent },
-    { path: 'get-help', component: GetHelpComponent },
-];
 
 @NgModule({
     declarations: [
@@ -62,7 +52,6 @@ const appRoutes: Routes = [
         ZXingScannerModule,
         MatDialogModule,
         HttpClientModule,
-        RouterModule.forRoot(appRoutes, { enableTracing: true }),
     ],
     providers: [],
     bootstrap: [AppComponent],

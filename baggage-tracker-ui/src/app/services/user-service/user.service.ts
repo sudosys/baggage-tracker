@@ -1,4 +1,4 @@
-import { apiURL } from './../../environments/environment';
+import { apiURL } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 

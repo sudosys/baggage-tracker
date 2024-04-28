@@ -1,7 +1,6 @@
-import { apiURL } from './../../environments/environment';
+import { apiURL } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root',
@@ -11,8 +10,8 @@ export class BaggageService {
 
     constructor(private http: HttpClient) {}
 
-    checkBaggageStatus(passangerHash: string): any {
-        return this.http.get<any>(apiURL + '/Baggage/CheckBaggageStatus?PassangerHash=' + passangerHash);
+    checkBaggageStatus(passengerHash: string): any {
+        return this.http.get<any>(apiURL + '/Baggage/CheckBaggageStatus?PassengerHash=' + passengerHash);
     }
 
     setBaggageStatus(ubc: string, status: string) {

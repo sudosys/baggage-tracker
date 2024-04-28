@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { QrCodeService } from '../services/qr-code.service';
+import { QrCodeService } from '../services/qr-code-service/qr-code.service';
 
 @Component({
     selector: 'app-generate-qr-code',

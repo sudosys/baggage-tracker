@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../main-page/main-page.component';
+import { User } from '../../models/user.model';
 
 @Injectable({
     providedIn: 'root',
@@ -29,14 +29,14 @@ export class InternalDataService {
 
     ////////////////
 
-    _passangerHash: string;
+    _passengerHash: string;
 
-    getPassangerHash() {
-        return this._passangerHash;
+    getPassengerHash() {
+        return this._passengerHash;
     }
 
-    setPassangerHash(passangerHash: string) {
-        this._passangerHash = passangerHash;
+    setPassengerHash(passengerHash: string) {
+        this._passengerHash = passengerHash;
     }
 
     ////////////////
