@@ -3,34 +3,40 @@
 <subheader iconName="done" text="QR Code Scan Complete"></subheader>
 
 <div class="baggageBelongsToYou" *ngIf="this.baggagePossesion && !this.isAdmin">
+    <img src="../../assets/after_scan_icons/successful.png" width="256" height="256" />
 
-    <img src="../../assets/after_scan_icons/successful.png" width="256" height="256"/>
+    <h4>{{ this.baggageBelongsToYou }}</h4>
 
-    <h4>{{this.baggageBelongsToYou}}</h4>
-
-    <button mat-raised-button class="receivedButton" (click)="markBaggageAsReceived()"><mat-icon>done</mat-icon> I received my baggage</button>
-    
+    <button mat-raised-button class="receivedButton" (click)="markBaggageAsReceived()">
+        <mat-icon>done</mat-icon> I received my baggage
+    </button>
 </div>
 
 <div class="baggageNotYours" *ngIf="!this.baggagePossesion && !this.isAdmin">
+    <img src="../../assets/after_scan_icons/unsuccessful.png" width="256" height="256" />
 
-    <img src="../../assets/after_scan_icons/unsuccessful.png" width="256" height="256"/>
+    <h4>{{ this.baggageNotYours }}</h4>
 
-    <h4>{{this.baggageNotYours}}</h4>
-
-    <button mat-raised-button class="mainMenuButton" (click)="navigateToMainMenu()"><mat-icon>arrow_back</mat-icon> Go back to main menu</button>
-
+    <button mat-raised-button class="mainMenuButton" (click)="navigateToMainMenu()">
+        <mat-icon>arrow_back</mat-icon> Go back to main menu
+    </button>
 </div>
 
 <div class="staffPage" *ngIf="this.isAdmin">
+    <img src="../../assets/after_scan_icons/staff.png" width="256" height="256" />
 
-    <img src="../../assets/after_scan_icons/staff.png" width="256" height="256"/>
+    <h4>{{ this.staffSelectAction }}</h4>
 
-    <h4>{{this.staffSelectAction}}</h4>
-
-    <button mat-raised-button class="staffBaggageMark" (click)="markBaggageAsInThePlane()"><mat-icon>check_box</mat-icon> In the plane</button>
-    <button mat-raised-button class="staffBaggageMark" (click)="markBaggageAsInTheLostOffice()"><mat-icon>check_box</mat-icon> In the lost office</button>
-    <button mat-raised-button class="staffBaggageMark" (click)="markBaggageAsWaitingForTransfer()"><mat-icon>check_box</mat-icon> Waiting for transfer to the plane</button>
-    <button mat-raised-button class="staffBaggageMark" (click)="markBaggageAsUnloaded()"><mat-icon>check_box</mat-icon> Unloaded from the plane</button>
-
+    <button mat-raised-button class="staffBaggageMark" (click)="markBaggageAsInThePlane()">
+        <mat-icon>check_box</mat-icon> In the plane
+    </button>
+    <button mat-raised-button class="staffBaggageMark" (click)="markBaggageAsInTheLostOffice()">
+        <mat-icon>check_box</mat-icon> In the lost office
+    </button>
+    <button mat-raised-button class="staffBaggageMark" (click)="markBaggageAsWaitingForTransfer()">
+        <mat-icon>check_box</mat-icon> Waiting for transfer to the plane
+    </button>
+    <button mat-raised-button class="staffBaggageMark" (click)="markBaggageAsUnloaded()">
+        <mat-icon>check_box</mat-icon> Unloaded from the plane
+    </button>
 </div>

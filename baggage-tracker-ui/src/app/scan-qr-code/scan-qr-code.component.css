@@ -2,7 +2,8 @@
     background-color: slategray;
 }
 
-#subheader h1, mat-icon {
+#subheader h1,
+mat-icon {
     padding-left: 5px;
     padding-bottom: 10px;
 }

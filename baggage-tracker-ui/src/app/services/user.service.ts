@@ -3,15 +3,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class UserService {
+    constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getUserData(username: string, flightnum: string): any {
-
-    return this.http.get<any>(apiURL + "/User/GetUserData?Username=" + username + "&Flightnum=" + flightnum);
-
-  }
+    getUserData(username: string, flightnum: string): any {
+        return this.http.get<any>(apiURL + '/User/GetUserData?Username=' + username + '&Flightnum=' + flightnum);
+    }
 }

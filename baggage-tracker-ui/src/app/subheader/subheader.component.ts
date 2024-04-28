@@ -1,17 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'subheader',
-  templateUrl: './subheader.component.html',
-  styleUrls: ['./subheader.component.css']
+    selector: 'subheader',
+    templateUrl: './subheader.component.html',
+    styleUrls: ['./subheader.component.css'],
 })
 export class SubheaderComponent implements OnInit {
+    @Input() iconName: string;
+    @Input() text: string;
 
-  @Input() iconName: string;
-  @Input() text: string;
+    constructor() {}
 
-  constructor() {}
-
-  ngOnInit(): void {}
-
+    ngOnInit(): void {}
 }

@@ -1,4 +1,3 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
@@ -20,16 +19,17 @@ $baggage-tracker-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$baggage-tracker-theme: mat.define-light-theme((
-  color: (
-    primary: $baggage-tracker-primary,
-    accent: $baggage-tracker-accent,
-    warn: $baggage-tracker-warn,
-  )
-));
+$baggage-tracker-theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $baggage-tracker-primary,
+            accent: $baggage-tracker-accent,
+            warn: $baggage-tracker-warn,
+        ),
+    )
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($baggage-tracker-theme);
-
