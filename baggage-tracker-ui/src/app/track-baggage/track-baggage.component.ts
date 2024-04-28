@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BaggageService } from '../services/baggage-service/baggage.service';
 import { InternalDataService } from '../services/internal-data-service/internal-data.service';
-
-interface Baggage {
-    flightNumber: string;
-    tagnumber: string;
-    status: string;
-}
+import { Baggage } from '../models/baggage.model';
 
 @Component({
     selector: 'app-track-baggage',
@@ -14,7 +9,7 @@ interface Baggage {
     styleUrls: ['./track-baggage.component.css'],
 })
 export class TrackBaggageComponent implements OnInit {
-    baggages: Baggage[];
+    baggageList: Baggage[];
 
     constructor(
         private baggageService: BaggageService,
@@ -22,16 +17,17 @@ export class TrackBaggageComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.baggageService
-            .checkBaggageStatus(this.dataService.getUserData()[0].passengerHash)
-            .subscribe((data: any) => {
-                this.baggages = data.map((element: any) => {
-                    return {
-                        flightNumber: element[0],
-                        tagnumber: element[1],
-                        status: element[2],
-                    };
-                });
-            });
+        this.baggageList = [
+            {
+                flightNumber: 'TK5091',
+                tagNumber: '0TK546617',
+                status: 'Unloaded from the plane',
+            },
+            {
+                flightNumber: 'TK5091',
+                tagNumber: '0TK143394',
+                status: 'In the lost office',
+            },
+        ];
     }
 }
