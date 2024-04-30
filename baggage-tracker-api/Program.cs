@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
 namespace BaggageTrackerApi;
 
 public class Program
@@ -12,6 +15,11 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services
+            .AddDbContext<BaggageTrackerDbContext>
+                (o => o.UseNpgsql(connectionString));
 
         var app = builder.Build();
 
