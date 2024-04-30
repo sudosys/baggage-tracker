@@ -1,5 +1,6 @@
+using BaggageTrackerApi.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BaggageTrackerApi;
 
@@ -15,6 +16,9 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddControllers();
+
+        RegisterServices(builder.Services);
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services
@@ -30,10 +34,19 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        app.UseRouting();
 
+        app.MapControllers();
+
+        app.UseHttpsRedirection();
+        
         app.UseAuthorization();
 
         app.Run();
+    }
+
+    private static void RegisterServices(IServiceCollection services)
+    {
+        services.AddScoped<MockDataService>();
     }
 }
