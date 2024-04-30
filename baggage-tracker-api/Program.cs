@@ -1,6 +1,5 @@
 using BaggageTrackerApi.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BaggageTrackerApi;
 
@@ -47,6 +46,7 @@ public class Program
 
     private static void RegisterServices(IServiceCollection services)
     {
+        services.AddScoped<UserService>();
         services.AddScoped<MockDataService>();
     }
 }

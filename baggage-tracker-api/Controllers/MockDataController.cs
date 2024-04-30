@@ -7,9 +7,6 @@ namespace BaggageTrackerApi.Controllers;
 [Route("api/[controller]")]
 public class MockDataController(MockDataService mockDataService) : ControllerBase
 {
-    private readonly MockDataService _mockDataService = 
-        mockDataService ?? throw new ArgumentNullException(nameof(mockDataService));
-    
     [HttpPost("mock-user")]
     public IActionResult SetMockUsers()
     {
