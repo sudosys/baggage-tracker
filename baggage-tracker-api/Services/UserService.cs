@@ -31,6 +31,22 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
 
         return user;
     }
+
+    public bool DoesFlightExist(string flightNumber) => 
+        baggageTrackerDbContext.Flights.Any(f => f.FlightNumber == flightNumber);
+
+    public List<User> GetUsersByFlightNumber(string flightNumber)
+    {
+        var usersByFlightNumber = baggageTrackerDbContext.Users
+            .Include(u => u.ActiveFlight)
+            .Include(u => u.Baggages)
+            .Where(u => u.ActiveFlight != null && 
+                        u.ActiveFlight.FlightNumber == flightNumber &&
+                        u.Role == UserRole.Passenger)
+            .ToList();
+
+        return usersByFlightNumber;
+    }
     
     public User? CheckUserCredentials(string username, string hashedPassword)
     {
