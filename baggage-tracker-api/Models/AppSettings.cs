@@ -2,5 +2,5 @@ namespace BaggageTrackerApi.Models;
 
 public class AppSettings
 {
-    public string SecretKey { get; set; }
+    public string SecretKey { get; init; }
 }

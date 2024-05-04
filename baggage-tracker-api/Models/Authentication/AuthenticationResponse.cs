@@ -1,14 +1,16 @@
-using BaggageTrackerApi.Entities.DTOs;
+using System.Text.Json.Serialization;
+using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Enums;
 
 namespace BaggageTrackerApi.Models.Authentication;
 
-public class AuthenticationResponse(AuthenticationStatus status, UserDto? user, string? token)
+public class AuthenticationResponse(AuthenticationStatus status, User? user, string? token)
 {
-    public AuthenticationStatus Status { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public AuthenticationStatus Status { get; init; } = status;
     
-    public UserDto? User { get; set; } = user;
+    public User? User { get; init; } = user;
 
-    public string? Token { get; set; } = token;
+    public string? Token { get; init; } = token;
 }
 
