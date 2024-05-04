@@ -1,17 +1,30 @@
-using BaggageTrackerApi.Entities.DTOs;
+using BaggageTrackerApi.Entities;
+using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Models.Authentication;
 using BaggageTrackerApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaggageTrackerApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(UserService userService) : ControllerBase
+[Attributes.Authorize(personnelOnly: true)]
+public class UserController(UserService userService, AuthenticationService authenticationService) : ControllerBase
 {
-    [HttpGet]
-    public ActionResult<List<UserDto>> GetUsers()
+    [HttpPost("authenticate")]
+    [AllowAnonymous]
+    public async Task<ActionResult<AuthenticationResponse>> Authenticate([FromBody] AuthenticationRequest request)
     {
-        return Ok(userService.GetUsers());
+        var authResponse = await authenticationService.AuthenticateUser(request);
+
+        return authResponse.Status == AuthenticationStatus.Success ? Ok(authResponse) : BadRequest(authResponse);
+    }
+    
+    [HttpGet]
+    public ActionResult<List<User>> GetUsers([FromQuery] bool passengersOnly = false)
+    {
+        return Ok(userService.GetUsers(passengersOnly));
     }
     
     [HttpGet("{userId:long}")]
