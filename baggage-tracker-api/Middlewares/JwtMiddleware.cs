@@ -36,8 +36,8 @@ public class JwtMiddleware(RequestDelegate next, AppSettings appSettings)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(secretKey),
-            ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateIssuer = false,
+            ValidateAudience = false,
             ClockSkew = TimeSpan.Zero
         }, out var validatedToken);
 
