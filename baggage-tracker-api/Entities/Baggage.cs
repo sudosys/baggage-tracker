@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BaggageTrackerApi.Enums;
 
 namespace BaggageTrackerApi.Entities;
 
 [Table("bt_baggages")]
-public class Baggage(string tagNumber, long userId)
+public class Baggage(string tagNumber, long userId, BaggageStatus baggageStatus)
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -15,6 +16,8 @@ public class Baggage(string tagNumber, long userId)
 
     public long UserId { get; set; } = userId;
 
+    public BaggageStatus BaggageStatus { get; set; } = baggageStatus;
+    
     [ForeignKey("UserId")]
     public virtual User User { get; set; }
 }

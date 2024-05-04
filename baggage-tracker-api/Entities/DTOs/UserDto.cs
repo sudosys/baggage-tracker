@@ -1,3 +1,5 @@
+using BaggageTrackerApi.Enums;
+
 namespace BaggageTrackerApi.Entities.DTOs;
 
 public class UserDto
@@ -7,6 +9,8 @@ public class UserDto
     public string Name { get; set; }
     
     public string Surname { get; set; }
+    
+    public UserRole Role { get; init; }
     
     public FlightDto ActiveFlight { get; set; }
     
