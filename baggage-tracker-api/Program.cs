@@ -1,3 +1,5 @@
+using BaggageTrackerApi.Middlewares;
+using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,12 +19,8 @@ public class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
 
+        ConfigureServices(builder);
         RegisterServices(builder.Services);
-
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services
-            .AddDbContext<BaggageTrackerDbContext>
-                (o => o.UseNpgsql(connectionString));
 
         var app = builder.Build();
 
@@ -39,14 +37,25 @@ public class Program
 
         app.UseHttpsRedirection();
         
+        app.UseMiddleware<JwtMiddleware>();
         app.UseAuthorization();
 
         app.Run();
     }
 
+    private static void ConfigureServices(WebApplicationBuilder builder)
+    {
+        var appSettingsSection = builder.Configuration.GetSection("AppSettings");
+        builder.Services.Configure<AppSettings>(appSettingsSection);
+        
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services
+            .AddDbContext<BaggageTrackerDbContext>
+                (o => o.UseNpgsql(connectionString));
+    }
+
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<UserService>();
-        services.AddScoped<MockDataService>();
     }
 }
