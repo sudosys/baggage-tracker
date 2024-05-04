@@ -2,15 +2,16 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using BaggageTrackerApi.Entities.DTOs;
+using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Models.Authentication;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BaggageTrackerApi.Services;
 
-public class AuthenticationService(UserService userService, AppSettings appSettings)
+public class AuthenticationService(UserService userService, IOptions<AppSettings> appSettings)
 {
     public async Task<AuthenticationResponse> AuthenticateUser(AuthenticationRequest request)
     {
@@ -29,17 +30,24 @@ public class AuthenticationService(UserService userService, AppSettings appSetti
     private static string HashPassword(string rawPassword)
     {
         var bytes = Encoding.UTF8.GetBytes(rawPassword);
-        var hashed = SHA256.HashData(bytes).ToString();
+        var hashed = SHA256.HashData(bytes);
 
         if (hashed == null)
         {
             throw new ArgumentNullException();
         }
+
+        var hashString = new StringBuilder();
+
+        foreach (var @byte in hashed)
+        {
+            hashString.Append(@byte.ToString("x2"));
+        }
             
-        return hashed;
+        return hashString.ToString();
     }
 
-    private async Task<string> GenerateJwtToken(UserDto userDto)
+    private async Task<string> GenerateJwtToken(User userDto)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = await Task.Run(() => tokenHandler.CreateToken(PrepareTokenClaims(userDto)));
@@ -47,9 +55,9 @@ public class AuthenticationService(UserService userService, AppSettings appSetti
         return tokenHandler.WriteToken(token);
     }
 
-    private SecurityTokenDescriptor PrepareTokenClaims(UserDto userDto)
+    private SecurityTokenDescriptor PrepareTokenClaims(User userDto)
     {
-        var key = Encoding.ASCII.GetBytes(appSettings.SecretKey);
+        var key = Encoding.ASCII.GetBytes(appSettings.Value.SecretKey);
         return new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[] { new Claim("id", userDto.Id.ToString()) }),

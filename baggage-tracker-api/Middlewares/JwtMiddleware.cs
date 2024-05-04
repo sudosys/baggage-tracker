@@ -2,11 +2,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Services;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BaggageTrackerApi.Middlewares;
 
-public class JwtMiddleware(RequestDelegate next, AppSettings appSettings)
+public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
 {
     public async Task Invoke(HttpContext context, UserService userService)
     {
@@ -31,7 +32,7 @@ public class JwtMiddleware(RequestDelegate next, AppSettings appSettings)
     private int ValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var secretKey = Encoding.ASCII.GetBytes(appSettings.SecretKey);
+        var secretKey = Encoding.ASCII.GetBytes(appSettings.Value.SecretKey);
         tokenHandler.ValidateToken(token, new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
