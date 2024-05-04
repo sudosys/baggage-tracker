@@ -36,26 +36,26 @@ public class BaggageTrackerDbContext(DbContextOptions<BaggageTrackerDbContext> o
     {
         modelBuilder.Entity<User>().HasData(new List<User>
         {
-            new(UserRole.Passenger, "avery.thompson", "Avery", "Thompson"),
-            new(UserRole.Passenger, "sebastian.morales", "Sebastian", "Morales"),
-            new(UserRole.Passenger, "olivia.martinez", "Olivia", "Martinez"),
+            new(1, UserRole.Passenger, "avery.thompson", "Avery Thompson", "711f24d8676c4462bcb9b8d6ff12e524483afcff5ea9ba726fba772c296b214c"),
+            new(2, UserRole.Passenger, "sebastian.morales", "Sebastian Morales", "46498d3d669434f320a45770a9b8ab8cbc16bd7dfeeb724c5503b2cb9d3d395e"),
+            new(3, UserRole.Passenger, "olivia.martinez", "Olivia Martinez", "0cc4bbe5ac4df909798c2ccd0844f15a86a694457758e42d9ce52e7d39e9e256"),
         });
         
         modelBuilder.Entity<Flight>().HasData(new List<Flight>
         {            
-            new("TK5094", 1),
-            new("TK5094", 2),
-            new("TK2745", 3),
+            new(1, "TK5094", 1),
+            new(2, "TK5094", 2),
+            new(3, "TK2745", 3),
         });
         
         modelBuilder.Entity<Baggage>().HasData(new List<Baggage>
         {
-            new("T436712", 1, BaggageStatus.Undefined),
-            new("T377053", 1, BaggageStatus.Undefined),
-            new("T205967", 1, BaggageStatus.Undefined),
-            new("T519736", 2, BaggageStatus.Undefined),
-            new("T724821", 3, BaggageStatus.Undefined),
-            new("T541263", 3, BaggageStatus.Undefined),
+            new(1, "T436712", 1, BaggageStatus.Undefined),
+            new(2, "T377053", 1, BaggageStatus.Undefined),
+            new(3, "T205967", 1, BaggageStatus.Undefined),
+            new(4, "T519736", 2, BaggageStatus.Undefined),
+            new(5, "T724821", 3, BaggageStatus.Undefined),
+            new(6, "T541263", 3, BaggageStatus.Undefined),
         });
     }
 }
