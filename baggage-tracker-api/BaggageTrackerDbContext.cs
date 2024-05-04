@@ -50,12 +50,12 @@ public class BaggageTrackerDbContext(DbContextOptions<BaggageTrackerDbContext> o
         
         modelBuilder.Entity<Baggage>().HasData(new List<Baggage>
         {
-            new(1, "T436712", 1, BaggageStatus.Undefined),
-            new(2, "T377053", 1, BaggageStatus.Undefined),
-            new(3, "T205967", 1, BaggageStatus.Undefined),
-            new(4, "T519736", 2, BaggageStatus.Undefined),
-            new(5, "T724821", 3, BaggageStatus.Undefined),
-            new(6, "T541263", 3, BaggageStatus.Undefined),
+            new(Guid.NewGuid(), "Blue Samsonite Case", 1, BaggageStatus.Undefined),
+            new(Guid.NewGuid(), "Benetti Sports Bag", 1, BaggageStatus.Undefined),
+            new(Guid.NewGuid(), "Lightweight PP Collection", 1, BaggageStatus.Undefined),
+            new(Guid.NewGuid(), "Samsonite Popsoda", 2, BaggageStatus.Undefined),
+            new(Guid.NewGuid(), "Fantana Matrix PP Hard Shell", 3, BaggageStatus.Undefined),
+            new(Guid.NewGuid(), "Canvas Explorer Holdall", 3, BaggageStatus.Undefined),
         });
     }
 }

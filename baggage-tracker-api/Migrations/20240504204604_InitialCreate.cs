@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -33,15 +34,14 @@ namespace BaggageTrackerApi.Migrations
                 name: "bt_baggages",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TagNumber = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
+                    BaggageId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BaggageName = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     BaggageStatus = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_bt_baggages", x => x.Id);
+                    table.PrimaryKey("PK_bt_baggages", x => x.BaggageId);
                     table.ForeignKey(
                         name: "FK_bt_baggages_bt_users_UserId",
                         column: x => x.UserId,
@@ -82,15 +82,15 @@ namespace BaggageTrackerApi.Migrations
 
             migrationBuilder.InsertData(
                 table: "bt_baggages",
-                columns: new[] { "Id", "BaggageStatus", "TagNumber", "UserId" },
+                columns: new[] { "BaggageId", "BaggageName", "BaggageStatus", "UserId" },
                 values: new object[,]
                 {
-                    { 1L, 0, "T436712", 1L },
-                    { 2L, 0, "T377053", 1L },
-                    { 3L, 0, "T205967", 1L },
-                    { 4L, 0, "T519736", 2L },
-                    { 5L, 0, "T724821", 3L },
-                    { 6L, 0, "T541263", 3L }
+                    { new Guid("0cfbee9a-1827-4990-b581-cb644739490f"), "Samsonite Popsoda", 0, 2L },
+                    { new Guid("2538de81-0574-4ec8-9316-d03aadf054b9"), "Fantana Matrix PP Hard Shell", 0, 3L },
+                    { new Guid("30ae8b2e-53eb-4a7b-90e8-a47292e25ec9"), "Canvas Explorer Holdall", 0, 3L },
+                    { new Guid("60a2b446-f4f6-43fb-a7be-6f9e82c91677"), "Blue Samsonite Case", 0, 1L },
+                    { new Guid("7c620188-aa3c-4224-92b9-478629c59862"), "Benetti Sports Bag", 0, 1L },
+                    { new Guid("de400235-14a7-416d-b50f-a51ac5a3ba30"), "Lightweight PP Collection", 0, 1L }
                 });
 
             migrationBuilder.InsertData(

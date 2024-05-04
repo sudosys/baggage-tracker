@@ -6,22 +6,20 @@ using BaggageTrackerApi.Enums;
 namespace BaggageTrackerApi.Entities;
 
 [Table("bt_baggages")]
-public class Baggage(long id, string tagNumber, long userId, BaggageStatus baggageStatus)
+public sealed class Baggage(Guid baggageId, string baggageName, long userId, BaggageStatus baggageStatus)
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; init; } = id;
+    public Guid BaggageId { get; init; } = baggageId;
 
-    [StringLength(15)]
-    public string TagNumber { get; init; } = tagNumber;
+    [MaxLength(150)]
+    public string BaggageName { get; init; } = baggageName;
 
     [JsonIgnore]
     public long UserId { get; init; } = userId;
-    
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public BaggageStatus BaggageStatus { get; init; } = baggageStatus;
     
     [ForeignKey("UserId")]
     [JsonIgnore]
-    public virtual User User { get; init; }
+    public User User { get; init; } = null!;
 }
