@@ -1,9 +1,10 @@
 using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Entities.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace BaggageTrackerApi.Services;
 
-public class UserService
+public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
 {
     public UserDto ConvertToDto(User user) => new()
     {
@@ -21,4 +22,40 @@ public class UserService
             TagNumber = b.TagNumber
         })
     };
+    
+    public List<UserDto> GetUsers()
+    {
+        var users = baggageTrackerDbContext.Users
+            .Include(u => u.ActiveFlight)
+            .Include(u => u.Baggages)
+            .Select(ConvertToDto)
+            .ToList();
+
+        return users;
+    }
+    
+    public UserDto? GetUserById(long userId)
+    {
+        var user = baggageTrackerDbContext.Users
+            .Include(u => u.ActiveFlight)
+            .Include(u => u.Baggages)
+            .FirstOrDefault(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return null;
+        }
+
+        var dto = ConvertToDto(user);
+        return dto;
+    }
+    
+    public UserDto? CheckUserCredentials(string username, string hashedPassword)
+    {
+        var user = baggageTrackerDbContext.Users
+            .SingleOrDefault(u => u.Name == username 
+                                  && u.Password == hashedPassword);
+
+        return user == null ? null :  ConvertToDto(user);
+    }
 }
