@@ -1,5 +1,7 @@
 using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Extensions;
+using BaggageTrackerApi.Models.Registration;
 using Microsoft.EntityFrameworkCore;
 
 namespace BaggageTrackerApi.Services;
@@ -58,4 +60,34 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
 
         return user;
     }
+
+    public void RegisterUser(UserRegistration userReg)
+    {
+        var user = new User(
+            UserRole.Passenger,
+            userReg.Username,
+            userReg.FullName,
+            userReg.Password.HashPassword());
+
+        baggageTrackerDbContext.Users.Add(user);
+        baggageTrackerDbContext.SaveChanges();
+
+        var activeFlight = new Flight(userReg.FlightNumber, user.Id);
+
+        var baggages = userReg.Baggages
+            .Select(baggage => 
+                new Baggage(
+                    Guid.NewGuid(),
+                    baggage,
+                    user.Id,
+                    BaggageStatus.Undefined))
+            .ToList();
+
+        baggageTrackerDbContext.Flights.Add(activeFlight);
+        baggageTrackerDbContext.Baggages.AddRange(baggages);
+
+        baggageTrackerDbContext.SaveChanges();
+    }
+    
+    
 }

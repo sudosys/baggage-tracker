@@ -5,11 +5,18 @@ using System.Text.Json.Serialization;
 namespace BaggageTrackerApi.Entities;
 
 [Table("bt_flights")]
-public class Flight(long id, string flightNumber, long userId)
+public sealed class Flight(string flightNumber, long userId)
 {
+    public Flight(long id, string flightNumber, long userId) : this(flightNumber, userId)
+    {
+        Id = id;
+        FlightNumber = flightNumber;
+        UserId = userId;
+    }
+
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; init; } = id;
+    public long Id { get; init; }
 
     [StringLength(15)]
     public string FlightNumber { get; init; } = flightNumber;
@@ -19,5 +26,5 @@ public class Flight(long id, string flightNumber, long userId)
 
     [ForeignKey("UserId")]
     [JsonIgnore]
-    public virtual User User { get; init; }
+    public User User { get; init; } = null!;
 }

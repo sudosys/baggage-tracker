@@ -1,9 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Models.Authentication;
 using Microsoft.Extensions.Options;
@@ -15,7 +15,7 @@ public class AuthenticationService(UserService userService, IOptions<AppSettings
 {
     public async Task<AuthenticationResponse> AuthenticateUser(AuthenticationRequest request)
     {
-        var user = userService.CheckUserCredentials(request.Username, HashPassword(request.Password));
+        var user = userService.CheckUserCredentials(request.Username, request.Password.HashPassword());
         
         if (user == null)
         {
@@ -25,26 +25,6 @@ public class AuthenticationService(UserService userService, IOptions<AppSettings
         var token = await GenerateJwtToken(user);
 
         return new AuthenticationResponse(AuthenticationStatus.Success, user, token);
-    }
-
-    private static string HashPassword(string rawPassword)
-    {
-        var bytes = Encoding.UTF8.GetBytes(rawPassword);
-        var hashed = SHA256.HashData(bytes);
-
-        if (hashed == null)
-        {
-            throw new ArgumentNullException();
-        }
-
-        var hashString = new StringBuilder();
-
-        foreach (var @byte in hashed)
-        {
-            hashString.Append(@byte.ToString("x2"));
-        }
-            
-        return hashString.ToString();
     }
 
     private async Task<string> GenerateJwtToken(User userDto)

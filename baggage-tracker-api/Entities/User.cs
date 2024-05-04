@@ -8,11 +8,22 @@ namespace BaggageTrackerApi.Entities;
 
 [Table("bt_users")]
 [method: SetsRequiredMembers]
-public sealed class User(long id, UserRole role, string username, string fullName, string password)
+public sealed class User(UserRole role, string username, string fullName, string password)
 {
+    [SetsRequiredMembers]
+    public User(long id, UserRole role, string username, string fullName, string password) 
+        : this(role, username, fullName, password)
+    {
+        Id = id;
+        Username = username;
+        FullName = fullName;
+        Password = password;
+        Role = role;
+    }
+
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public required long Id { get; init; } = id;
+    public required long Id { get; init; }
 
     [StringLength(50)]
     public required string Username { get; init; } = username;
@@ -22,7 +33,7 @@ public sealed class User(long id, UserRole role, string username, string fullNam
 
     [StringLength(256)]
     [JsonIgnore]
-    public required string Password { get; init; } = password;
+    public string Password { get; init; } = password;
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public required UserRole Role { get; init; } = role;

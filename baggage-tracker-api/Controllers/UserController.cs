@@ -1,4 +1,5 @@
 using BaggageTrackerApi.Entities;
+using BaggageTrackerApi.Models.Registration;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,8 +8,16 @@ namespace BaggageTrackerApi.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Attributes.Authorize(personnelOnly: true)]
-public class UserController(UserService userService, AuthenticationService authenticationService) : ControllerBase
+public class UserController(UserService userService) : ControllerBase
 {
+    [HttpPost("register")]
+    public IActionResult RegisterUser([FromBody] UserRegistration userRegistration)
+    {
+        userService.RegisterUser(userRegistration);
+
+        return NoContent();
+    }
+    
     [HttpGet]
     public ActionResult<List<User>> GetUsers([FromQuery] bool passengersOnly = false)
     {
