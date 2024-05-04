@@ -88,6 +88,25 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
 
         baggageTrackerDbContext.SaveChanges();
     }
-    
-    
+
+    public void DeleteUser(long userId)
+    {
+        var user = baggageTrackerDbContext.Users.Where(u => u.Id == userId)
+            .Include(u => u.ActiveFlight)
+            .Include(u => u.Baggages)
+            .SingleOrDefault();
+
+        if (user == null)
+        {
+            throw new NullReferenceException($"User with the id {userId} could not be found.");
+        }
+
+        if (user.Role == UserRole.Personnel)
+        {
+            throw new InvalidOperationException($"Users with the role of {nameof(UserRole.Personnel)}.");
+        }
+
+        baggageTrackerDbContext.Users.Remove(user);
+        baggageTrackerDbContext.SaveChanges();
+    }
 }

@@ -1,4 +1,5 @@
 using BaggageTrackerApi.Entities;
+using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Models.Registration;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,25 @@ public class UserController(UserService userService) : ControllerBase
     public IActionResult RegisterUser([FromBody] UserRegistration userRegistration)
     {
         userService.RegisterUser(userRegistration);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult DeleteUser(long userId)
+    {
+        try
+        {
+            userService.DeleteUser(userId);
+        }
+        catch (NullReferenceException exception)
+        {
+            return NotFound(exception.Message);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(exception.Message);
+        }
 
         return NoContent();
     }
