@@ -1,23 +1,27 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using BaggageTrackerApi.Enums;
 
 namespace BaggageTrackerApi.Entities;
 
 [Table("bt_baggages")]
-public class Baggage(string tagNumber, long userId, BaggageStatus baggageStatus)
+public class Baggage(long id, string tagNumber, long userId, BaggageStatus baggageStatus)
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
+    public long Id { get; init; } = id;
 
     [StringLength(15)]
-    public string TagNumber { get; set; } = tagNumber;
+    public string TagNumber { get; init; } = tagNumber;
 
-    public long UserId { get; set; } = userId;
-
-    public BaggageStatus BaggageStatus { get; set; } = baggageStatus;
+    [JsonIgnore]
+    public long UserId { get; init; } = userId;
+    
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public BaggageStatus BaggageStatus { get; init; } = baggageStatus;
     
     [ForeignKey("UserId")]
-    public virtual User User { get; set; }
+    [JsonIgnore]
+    public virtual User User { get; init; }
 }

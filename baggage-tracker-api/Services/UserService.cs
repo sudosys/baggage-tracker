@@ -1,40 +1,23 @@
 using BaggageTrackerApi.Entities;
-using BaggageTrackerApi.Entities.DTOs;
+using BaggageTrackerApi.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace BaggageTrackerApi.Services;
 
 public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
 {
-    public UserDto ConvertToDto(User user) => new()
-    {
-        Id = user.Id,
-        Name = user.Name,
-        Surname = user.Surname,
-        ActiveFlight = new FlightDto
-        {
-            Id = user.ActiveFlight.Id,
-            FlightNumber = user.ActiveFlight.FlightNumber
-        },
-        Baggages = user.Baggages.Select(b => new BaggageDto
-        {
-            Id = b.Id,
-            TagNumber = b.TagNumber
-        })
-    };
-    
-    public List<UserDto> GetUsers()
+    public List<User> GetUsers(bool passengersOnly)
     {
         var users = baggageTrackerDbContext.Users
             .Include(u => u.ActiveFlight)
             .Include(u => u.Baggages)
-            .Select(ConvertToDto)
+            .Where(u => !passengersOnly || u.Role == UserRole.Passenger)
             .ToList();
 
         return users;
     }
     
-    public UserDto? GetUserById(long userId)
+    public User? GetUserById(long userId)
     {
         var user = baggageTrackerDbContext.Users
             .Include(u => u.ActiveFlight)
@@ -46,16 +29,17 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
             return null;
         }
 
-        var dto = ConvertToDto(user);
-        return dto;
+        return user;
     }
     
-    public UserDto? CheckUserCredentials(string username, string hashedPassword)
+    public User? CheckUserCredentials(string username, string hashedPassword)
     {
         var user = baggageTrackerDbContext.Users
-            .SingleOrDefault(u => u.Name == username 
+            .Include(u => u.ActiveFlight)
+            .Include(u => u.Baggages)
+            .SingleOrDefault(u => u.Username == username 
                                   && u.Password == hashedPassword);
 
-        return user == null ? null :  ConvertToDto(user);
+        return user;
     }
 }

@@ -1,32 +1,35 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using BaggageTrackerApi.Enums;
 
 namespace BaggageTrackerApi.Entities;
 
 [Table("bt_users")]
-public class User(UserRole role, string username, string name, string surname)
+[method: SetsRequiredMembers]
+public sealed class User(long id, UserRole role, string username, string fullName, string password)
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; init; }
-    
+    public required long Id { get; init; } = id;
+
     [StringLength(50)]
-    public string Username { get; init; } = username;
-    
-    [StringLength(75)]
-    public string Name { get; init; } = name;
+    public required string Username { get; init; } = username;
 
-    [StringLength(75)]
-    public string Surname { get; init; } = surname;
-    
-    [MaxLength(20)]
-    [MinLength(8)]
-    public string Password { get; init; }
+    [StringLength(150)]
+    public required string FullName { get; init; } = fullName;
 
-    public UserRole Role { get; init; }
+    [StringLength(256)]
+    [JsonIgnore]
+    public required string Password { get; init; } = password;
 
-    public virtual Flight ActiveFlight { get; set; }
-    
-    public virtual ICollection<Baggage> Baggages { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public required UserRole Role { get; init; } = role;
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Flight? ActiveFlight { get; init; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ICollection<Baggage>? Baggages { get; init; }
 }

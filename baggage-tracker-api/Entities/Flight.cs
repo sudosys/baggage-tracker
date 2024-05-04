@@ -1,20 +1,23 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BaggageTrackerApi.Entities;
 
 [Table("bt_flights")]
-public class Flight(string flightNumber, long userId)
+public class Flight(long id, string flightNumber, long userId)
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
+    public long Id { get; init; } = id;
 
     [StringLength(15)]
-    public string FlightNumber { get; set; } = flightNumber;
+    public string FlightNumber { get; init; } = flightNumber;
 
-    public long UserId { get; set; } = userId;
+    [JsonIgnore]
+    public long UserId { get; init; } = userId;
 
     [ForeignKey("UserId")]
-    public virtual User User { get; set; }
+    [JsonIgnore]
+    public virtual User User { get; init; }
 }
