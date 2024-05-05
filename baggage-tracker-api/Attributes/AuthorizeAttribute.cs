@@ -1,4 +1,5 @@
 using BaggageTrackerApi.Entities;
+using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ public class AuthorizeAttribute(bool personnelOnly = false) : Attribute, IAuthor
             return;
         }
         
-        var user = (User?)context.HttpContext.Items["User"];
+        var user = (UserDto?)context.HttpContext.Items["User"];
 
         if (user == null)
         {

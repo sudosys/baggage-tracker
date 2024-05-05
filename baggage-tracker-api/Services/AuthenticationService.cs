@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using BaggageTrackerApi.Entities;
+using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models;
@@ -27,20 +27,20 @@ public class AuthenticationService(UserService userService, IOptions<AppSettings
         return new AuthenticationResponse(AuthenticationStatus.Success, user, token);
     }
 
-    private async Task<string> GenerateJwtToken(User userDto)
+    private async Task<string> GenerateJwtToken(UserSlimDto user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var token = await Task.Run(() => tokenHandler.CreateToken(PrepareTokenClaims(userDto)));
+        var token = await Task.Run(() => tokenHandler.CreateToken(PrepareTokenClaims(user)));
 
         return tokenHandler.WriteToken(token);
     }
 
-    private SecurityTokenDescriptor PrepareTokenClaims(User userDto)
+    private SecurityTokenDescriptor PrepareTokenClaims(UserSlimDto user)
     {
         var key = Encoding.ASCII.GetBytes(appSettings.Value.SecretKey);
         return new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { new Claim("id", userDto.Id.ToString()) }),
+            Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
             Expires = DateTime.UtcNow.AddDays(1),
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using BaggageTrackerApi.Entities;
+using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models.QrCode;
 using QRCoder;
@@ -8,7 +9,7 @@ namespace BaggageTrackerApi.Services;
 
 public class QrCodeGenerationService(QRCodeGenerator qrCodeGenerator)
 {
-    public Dictionary<string, List<QrCodeFile>> CreateQrCodes(List<User> passengersOfFlight)
+    public Dictionary<string, List<QrCodeFile>> CreateQrCodes(IEnumerable<UserDto> passengersOfFlight)
     {
         var qrCodesGroupedByPassenger = new Dictionary<string, List<QrCodeFile>>();
 
@@ -32,7 +33,7 @@ public class QrCodeGenerationService(QRCodeGenerator qrCodeGenerator)
 
     private static void AddQrCodeToFolder(
         IDictionary<string, List<QrCodeFile>> qrCodes,
-        User passenger, 
+        UserDto passenger, 
         Baggage baggage,
         byte[] qrCode)
     {

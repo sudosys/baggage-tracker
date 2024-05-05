@@ -1,67 +1,55 @@
+using AutoMapper;
 using BaggageTrackerApi.Entities;
+using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models.Registration;
-using Microsoft.EntityFrameworkCore;
 
 namespace BaggageTrackerApi.Services;
 
-public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
+public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMapper mapper)
 {
-    public List<User> GetUsers(bool passengersOnly)
-    {
-        var users = baggageTrackerDbContext.Users
-            .Include(u => u.ActiveFlight)
-            .Include(u => u.Baggages)
+    public IEnumerable<UserDto> GetUsers(bool passengersOnly) =>
+        baggageTrackerDbContext.Users
+            .QueryUserWithFlightData()
             .Where(u => !passengersOnly || u.Role == UserRole.Passenger)
+            .AsEnumerable()
+            .Select(mapper.Map<UserDto>)
             .ToList();
 
-        return users;
-    }
-    
-    public User? GetUserById(long userId)
-    {
-        var user = baggageTrackerDbContext.Users
-            .Include(u => u.ActiveFlight)
-            .Include(u => u.Baggages)
+    public UserDto? GetUserById(long userId) =>
+        baggageTrackerDbContext.Users
+            .QueryUserWithFlightData()
+            .AsEnumerable()
+            .Select(mapper.Map<UserDto>)
             .FirstOrDefault(u => u.Id == userId);
 
-        if (user == null)
-        {
-            return null;
-        }
-
-        return user;
-    }
-
-    public List<User> GetUsersByFlightNumber(string flightNumber)
+    public IEnumerable<UserDto> GetUsersByFlightNumber(string flightNumber)
     {
         if (!baggageTrackerDbContext.DoesFlightExist(flightNumber))
         {
             throw new Exception($"Flight {flightNumber} does not exist.");
         }
-        
+
         var usersByFlightNumber = baggageTrackerDbContext.Users
-            .Include(u => u.ActiveFlight)
-            .Include(u => u.Baggages)
-            .Where(u => u.ActiveFlight != null && 
+            .QueryUserWithFlightData()
+            .Where(u => u.ActiveFlight != null &&
                         u.ActiveFlight.FlightNumber == flightNumber &&
                         u.Role == UserRole.Passenger)
+            .AsEnumerable()
+            .Select(mapper.Map<UserDto>)
             .ToList();
 
         return usersByFlightNumber;
     }
     
-    public User? CheckUserCredentials(string username, string hashedPassword)
-    {
-        var user = baggageTrackerDbContext.Users
-            .Include(u => u.ActiveFlight)
-            .Include(u => u.Baggages)
-            .SingleOrDefault(u => u.Username == username 
-                                  && u.Password == hashedPassword);
-
-        return user;
-    }
+    public UserSlimDto? CheckUserCredentials(string username, string hashedPassword) =>
+        baggageTrackerDbContext.Users
+            .Where(u => u.Username == username
+                        && u.Password == hashedPassword)
+            .AsEnumerable()
+            .Select(mapper.Map<UserSlimDto>)
+            .SingleOrDefault();
 
     public void RegisterUser(UserRegistration userReg)
     {
@@ -93,10 +81,9 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
 
     public void DeleteUser(long userId)
     {
-        var user = baggageTrackerDbContext.Users.Where(u => u.Id == userId)
-            .Include(u => u.ActiveFlight)
-            .Include(u => u.Baggages)
-            .SingleOrDefault();
+        var user = baggageTrackerDbContext.Users
+            .QueryUserWithFlightData()
+            .SingleOrDefault(u => u.Id == userId);
 
         if (user == null)
         {
@@ -105,7 +92,7 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
 
         if (user.Role == UserRole.Personnel)
         {
-            throw new InvalidOperationException($"Users with the role of {nameof(UserRole.Personnel)}.");
+            throw new InvalidOperationException($"Users with the role of {nameof(UserRole.Personnel)} can't be deleted.");
         }
 
         baggageTrackerDbContext.Users.Remove(user);

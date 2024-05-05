@@ -85,6 +85,10 @@ public class Program
         builder.Services
             .AddDbContext<BaggageTrackerDbContext>
                 (o => o.UseNpgsql(connectionString));
+        
+        builder.Services
+            .AddAutoMapper(cfg => 
+                cfg.AddProfile(new AutoMapperProfile()));
     }
 
     private static void RegisterServices(IServiceCollection services)
