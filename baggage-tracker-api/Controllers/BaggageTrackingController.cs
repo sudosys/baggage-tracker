@@ -61,4 +61,21 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
             return BadRequest(e.Message);
         }
     }
+    
+    [HttpPost("qr-code-scan")]
+    [Authorize]
+    public ActionResult<QrCodeScanResult> ProcessQrCodeScan([FromQuery] string qrCodeData)
+    {
+        var user = (UserDto?)HttpContext.Items["User"];
+        var status = baggageTrackingService.ProcessQrCodeScan(user!, qrCodeData);
+        switch (status)
+        {
+            case QrCodeScanResult.Success:
+                return Ok(status.ToString());
+            case QrCodeScanResult.NotOwnedByPassenger:
+            case QrCodeScanResult.UnknownError:
+            default:
+                return BadRequest(status.ToString());
+        }
+    }
 }

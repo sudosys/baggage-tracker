@@ -37,7 +37,7 @@ public class QrCodeGenerationService(QRCodeGenerator qrCodeGenerator)
         Baggage baggage,
         byte[] qrCode)
     {
-        var qrCodeFileName = $"{baggage.BaggageName}_{baggage.BaggageId}.png";
+        var qrCodeFileName = GetQrCodeFileName(baggage);
         if (qrCodes.TryGetValue(passenger.Username, out var qrCodesOfPassenger))
         {
             qrCodesOfPassenger.Add(new QrCodeFile(qrCodeFileName, qrCode));
@@ -47,6 +47,8 @@ public class QrCodeGenerationService(QRCodeGenerator qrCodeGenerator)
             qrCodes.Add(passenger.Username, [new QrCodeFile(qrCodeFileName, qrCode)]);
         }
     }
+
+    private static string GetQrCodeFileName(Baggage baggage) => $"{baggage.BaggageName}_{baggage.BaggageId}.png"; 
     
     public static MemoryStream CompressQrCodes(Dictionary<string, List<QrCodeFile>> qrCodes)
     {
@@ -70,12 +72,8 @@ public class QrCodeGenerationService(QRCodeGenerator qrCodeGenerator)
         return archiveStream;
     }
 
-    private static string GenerateUniqueBaggageCode(string flightNumber, string username, string baggageId)
-    {
-        var hashInput = $"{flightNumber}.{username}.{baggageId}";
-
-        return hashInput.Sha256Hash();
-    }
+    private static string GenerateUniqueBaggageCode(string flightNumber, string username, string baggageId) 
+        => string.Join(QrCodeDataProcessor.UbcSeparator, flightNumber, username, baggageId);
 
     private byte[] GenerateQrCode(string qrContent)
     {

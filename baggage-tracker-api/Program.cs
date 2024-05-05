@@ -98,5 +98,6 @@ public class Program
         services.AddScoped<BaggageTrackingService>();
         services.AddScoped<QrCodeGenerationService>();
         services.AddScoped<QRCodeGenerator>();
+        services.AddScoped<QrCodeDataProcessor>();
     }
 }

@@ -25,4 +25,5 @@ public static class StringExtensions
         return hashString.ToString();
     }
 
+    public static Guid ParseAsGuid(this string input) => Guid.Parse(input);
 }
