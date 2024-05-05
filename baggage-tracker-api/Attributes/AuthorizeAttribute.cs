@@ -9,12 +9,6 @@ namespace BaggageTrackerApi.Attributes;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeAttribute(bool personnelOnly = false) : Attribute, IAuthorizationFilter
 {
-    private readonly JsonResult _unauthenticatedResult =
-        new(new { Message = "Authentication needed to perform this action.", StatusCode = StatusCodes.Status401Unauthorized });
-    
-    private readonly JsonResult _forbiddenResult =
-        new(new { Message = $"Only {nameof(UserRole.Personnel)} is authorized to perform this action.", StatusCode = StatusCodes.Status403Forbidden});
-    
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         if (SkipAuthorization(context))
@@ -26,10 +20,12 @@ public class AuthorizeAttribute(bool personnelOnly = false) : Attribute, IAuthor
 
         if (user == null)
         {
-            context.Result = _unauthenticatedResult;
+            context.Result = new JsonResult("Authentication needed to perform this action.");
+            context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
         } else if (personnelOnly && user.Role != UserRole.Personnel)
         {
-            context.Result = _forbiddenResult;
+            context.Result = new JsonResult($"Only {nameof(UserRole.Personnel)} is authorized to perform this action.");
+            context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
         }
     }
 
