@@ -10,6 +10,13 @@ public class BaggageTrackingService(
     QrCodeGenerationService qrCodeGenerationService,
     IMapper mapper)
 {
+    private static BaggageStatus[] _passengerAllowedStatuses = [BaggageStatus.ReceivedByThePassenger];
+    private static BaggageStatus[] _personnelAllowedStatuses = [
+        BaggageStatus.WaitingForLoad,
+        BaggageStatus.InThePlane,
+        BaggageStatus.UnloadedFromThePlane,
+        BaggageStatus.InTheLostOffice];
+    
     public MemoryStream GenerateQrCodesForFlight(string flightNumber)
     {
         var users = userService.GetUsersByFlightNumber(flightNumber);
@@ -45,6 +52,8 @@ public class BaggageTrackingService(
     
     public void SetBaggageStatus(UserDto user, Guid baggageId, BaggageStatus newStatus)
     {
+        ValidateBaggageStatusByRole(user, newStatus);
+        
         if (user is { Role: UserRole.Passenger } && !IsBaggageOwner(user.Id, baggageId))
         {
             throw new Exception("Baggage not owned by the passenger");
@@ -61,6 +70,21 @@ public class BaggageTrackingService(
         baggage.BaggageStatus = newStatus;
         
         baggageTrackerDbContext.SaveChanges();
+    }
+
+    private static void ValidateBaggageStatusByRole(UserDto user, BaggageStatus newStatus)
+    {
+        if (user.Role == UserRole.Passenger && !_passengerAllowedStatuses.Contains(newStatus))
+        {
+            throw new Exception(
+                $"Passenger can't set a baggage status other than '{newStatus}'");
+        }
+        
+        if (user.Role == UserRole.Personnel && !_personnelAllowedStatuses.Contains(newStatus))
+        {
+            throw new Exception(
+                $"Personnel can't set the baggage status '{newStatus}'");
+        }
     }
 
     private bool IsBaggageOwner(long userId, Guid baggageId) => 
