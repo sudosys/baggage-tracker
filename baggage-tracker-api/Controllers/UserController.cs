@@ -20,7 +20,7 @@ public class UserController(UserService userService) : ControllerBase
     }
 
     [HttpDelete]
-    public IActionResult DeleteUser(long userId)
+    public IActionResult DeleteUser([FromQuery] long userId)
     {
         try
         {
@@ -53,7 +53,7 @@ public class UserController(UserService userService) : ControllerBase
     }
     
     [HttpGet("{flightNumber}")]
-    public ActionResult<List<User>> GetUsersByFlightNumber([FromRoute] string flightNumber)
+    public ActionResult<List<User>> GetUsersByFlightNumber([FromQuery] string flightNumber)
     {
         try
         {
