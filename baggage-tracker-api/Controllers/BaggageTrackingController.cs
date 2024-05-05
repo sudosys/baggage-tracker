@@ -1,4 +1,5 @@
 using BaggageTrackerApi.Attributes;
+using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,11 +7,11 @@ namespace BaggageTrackerApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(personnelOnly: true)]
 public class BaggageTrackingController(BaggageTrackingService baggageTrackingService) : ControllerBase
 {
     [HttpGet("baggage-qr-code")]
-    public IActionResult GetBaggageQrCodes(string flightNumber)
+    [Authorize(personnelOnly: true)]
+    public IActionResult GetBaggageQrCodes([FromQuery] string flightNumber)
     {
         try
         {
@@ -26,6 +27,21 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
         catch (Exception e)
         {
             return NotFound(e.Message);
+        }
+    }
+
+    [HttpGet("baggage-status")]
+    [Authorize]
+    public ActionResult<List<BaggageDto>> GetBaggageStatus([FromQuery] long userId)
+    {
+        try
+        {
+            var baggages = baggageTrackingService.GetBaggageStatus(userId);
+            return Ok(baggages);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
         }
     }
 }
