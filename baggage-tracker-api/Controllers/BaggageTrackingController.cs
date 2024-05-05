@@ -1,5 +1,6 @@
 using BaggageTrackerApi.Attributes;
 using BaggageTrackerApi.Entities.DTOs;
+using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,6 +39,22 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
         {
             var baggages = baggageTrackingService.GetBaggageStatus(userId);
             return Ok(baggages);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost("baggage-status")]
+    [Authorize]
+    public IActionResult SetBaggageStatus([FromQuery] Guid baggageId, [FromQuery] BaggageStatus newStatus)
+    {
+        try
+        {
+            var user = (UserDto?)HttpContext.Items["User"];
+            baggageTrackingService.SetBaggageStatus(user!, baggageId, newStatus);
+            return NoContent();
         }
         catch (Exception e)
         {

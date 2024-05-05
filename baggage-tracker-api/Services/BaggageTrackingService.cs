@@ -42,4 +42,27 @@ public class BaggageTrackingService(
             .Select(mapper.Map<BaggageDto>)
             .ToList();
     }
+    
+    public void SetBaggageStatus(UserDto user, Guid baggageId, BaggageStatus newStatus)
+    {
+        if (user is { Role: UserRole.Passenger } && !IsBaggageOwner(user.Id, baggageId))
+        {
+            throw new Exception("Baggage not owned by the passenger");
+        }
+        
+        var baggage = baggageTrackerDbContext.Baggages
+            .FirstOrDefault(b => b.BaggageId == baggageId);
+
+        if (baggage == null)
+        {
+            throw new Exception($"Baggage with id {baggageId} does not exist");
+        }
+
+        baggage.BaggageStatus = newStatus;
+        
+        baggageTrackerDbContext.SaveChanges();
+    }
+
+    private bool IsBaggageOwner(long userId, Guid baggageId) => 
+        baggageTrackerDbContext.Baggages.Any(b => b.UserId == userId && b.BaggageId == baggageId);
 }

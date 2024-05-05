@@ -27,7 +27,8 @@ public class AuthorizeAttribute(bool personnelOnly = false) : Attribute, IAuthor
         {
             context.Result = new JsonResult($"Only {nameof(UserRole.Personnel)} is authorized to perform this action.");
             context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
-        } else if (!personnelOnly && user.Role == UserRole.Passenger && user.Id.ToString() != userIdParam)
+        } else if (!personnelOnly && user.Role == UserRole.Passenger && 
+                   userIdParam != null && user.Id.ToString() != userIdParam)
         {
             context.Result = new JsonResult($"Passenger is not authorized to query another passenger's data");
             context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;

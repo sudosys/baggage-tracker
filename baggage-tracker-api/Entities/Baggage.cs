@@ -17,7 +17,7 @@ public sealed class Baggage(Guid baggageId, string baggageName, long userId, Bag
     public long UserId { get; init; } = userId;
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BaggageStatus BaggageStatus { get; init; } = baggageStatus;
+    public BaggageStatus BaggageStatus { get; set; } = baggageStatus;
     
     [ForeignKey("UserId")]
     [JsonIgnore]
