@@ -1,4 +1,3 @@
-using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -18,6 +17,7 @@ public class AuthorizeAttribute(bool personnelOnly = false) : Attribute, IAuthor
         }
         
         var user = (UserDto?)context.HttpContext.Items["User"];
+        var userIdParam = context.HttpContext.Request.Query["userId"].FirstOrDefault();
 
         if (user == null)
         {
@@ -26,6 +26,10 @@ public class AuthorizeAttribute(bool personnelOnly = false) : Attribute, IAuthor
         } else if (personnelOnly && user.Role != UserRole.Personnel)
         {
             context.Result = new JsonResult($"Only {nameof(UserRole.Personnel)} is authorized to perform this action.");
+            context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+        } else if (!personnelOnly && user.Role == UserRole.Passenger && user.Id.ToString() != userIdParam)
+        {
+            context.Result = new JsonResult($"Passenger is not authorized to query another passenger's data");
             context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
         }
     }
