@@ -5,9 +5,9 @@ namespace BaggageTrackerApi.Extensions;
 
 public static class StringExtensions
 {
-    public static string HashPassword(this string rawPassword)
+    public static string Sha256Hash(this string input)
     {
-        var bytes = Encoding.UTF8.GetBytes(rawPassword);
+        var bytes = Encoding.UTF8.GetBytes(input);
         var hashed = SHA256.HashData(bytes);
 
         if (hashed == null)

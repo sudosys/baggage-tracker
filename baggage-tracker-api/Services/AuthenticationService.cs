@@ -15,7 +15,7 @@ public class AuthenticationService(UserService userService, IOptions<AppSettings
 {
     public async Task<AuthenticationResponse> AuthenticateUser(AuthenticationRequest request)
     {
-        var user = userService.CheckUserCredentials(request.Username, request.Password.HashPassword());
+        var user = userService.CheckUserCredentials(request.Username, request.Password.Sha256Hash());
         
         if (user == null)
         {
