@@ -34,11 +34,13 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
         return user;
     }
 
-    public bool DoesFlightExist(string flightNumber) => 
-        baggageTrackerDbContext.Flights.Any(f => f.FlightNumber == flightNumber);
-
     public List<User> GetUsersByFlightNumber(string flightNumber)
     {
+        if (!baggageTrackerDbContext.DoesFlightExist(flightNumber))
+        {
+            throw new Exception($"Flight {flightNumber} does not exist.");
+        }
+        
         var usersByFlightNumber = baggageTrackerDbContext.Users
             .Include(u => u.ActiveFlight)
             .Include(u => u.Baggages)
@@ -67,7 +69,7 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext)
             UserRole.Passenger,
             userReg.Username,
             userReg.FullName,
-            userReg.Password.HashPassword());
+            userReg.Password.Sha256Hash());
 
         baggageTrackerDbContext.Users.Add(user);
         baggageTrackerDbContext.SaveChanges();

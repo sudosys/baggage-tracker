@@ -55,13 +55,14 @@ public class UserController(UserService userService) : ControllerBase
     [HttpGet("{flightNumber}")]
     public ActionResult<List<User>> GetUsersByFlightNumber([FromRoute] string flightNumber)
     {
-        if (!userService.DoesFlightExist(flightNumber))
+        try
         {
-            return NotFound($"Flight {flightNumber} does not exist.");
+            var usersByFlightNumber = userService.GetUsersByFlightNumber(flightNumber);
+            return Ok(usersByFlightNumber);
         }
-        
-        var usersByFlightNumber = userService.GetUsersByFlightNumber(flightNumber);
-
-        return Ok(usersByFlightNumber);
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }

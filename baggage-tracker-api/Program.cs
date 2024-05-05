@@ -3,6 +3,7 @@ using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using QRCoder;
 
 namespace BaggageTrackerApi;
 
@@ -90,5 +91,8 @@ public class Program
     {
         services.AddScoped<UserService>();
         services.AddScoped<AuthenticationService>();
+        services.AddScoped<BaggageTrackingService>();
+        services.AddScoped<QrCodeGenerationService>();
+        services.AddScoped<QRCodeGenerator>();
     }
 }
