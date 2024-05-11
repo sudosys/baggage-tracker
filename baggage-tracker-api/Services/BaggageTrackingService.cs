@@ -78,7 +78,7 @@ public class BaggageTrackingService(
         if (user.Role == UserRole.Passenger && !PassengerAllowedStatuses.Contains(newStatus))
         {
             throw new Exception(
-                $"Passenger can't set a baggage status other than '{newStatus}'");
+                $"Passenger can't set a baggage status other than '{string.Join(',', PassengerAllowedStatuses)}'");
         }
         
         if (user.Role == UserRole.Personnel && !PersonnelAllowedStatuses.Contains(newStatus))
