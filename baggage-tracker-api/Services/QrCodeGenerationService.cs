@@ -19,7 +19,7 @@ public class QrCodeGenerationService(QRCodeGenerator qrCodeGenerator)
             {
                 var uniqueBaggageCode = GenerateUniqueBaggageCode(
                     passenger.ActiveFlight!.FlightNumber,
-                    passenger.Username,
+                    passenger.Id,
                     baggage.BaggageId.ToString());
 
                 var qrCode = GenerateQrCode(uniqueBaggageCode);
@@ -72,8 +72,8 @@ public class QrCodeGenerationService(QRCodeGenerator qrCodeGenerator)
         return archiveStream;
     }
 
-    private static string GenerateUniqueBaggageCode(string flightNumber, string username, string baggageId) 
-        => string.Join(QrCodeDataProcessor.UbcSeparator, flightNumber, username, baggageId);
+    private static string GenerateUniqueBaggageCode(string flightNumber, long userId, string baggageId) 
+        => string.Join(UbcProcessor.UbcSeparator, flightNumber, userId, baggageId);
 
     private byte[] GenerateQrCode(string qrContent)
     {

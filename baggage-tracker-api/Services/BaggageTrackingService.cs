@@ -1,7 +1,6 @@
 using AutoMapper;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
-using BaggageTrackerApi.Extensions;
 
 namespace BaggageTrackerApi.Services;
 
@@ -9,7 +8,7 @@ public class BaggageTrackingService(
     BaggageTrackerDbContext baggageTrackerDbContext,
     UserService userService,
     QrCodeGenerationService qrCodeGenerationService,
-    QrCodeDataProcessor qrCodeDataProcessor,
+    UbcProcessor ubcProcessor,
     IMapper mapper)
 {
     private static readonly BaggageStatus[] PassengerAllowedStatuses = [BaggageStatus.ReceivedByThePassenger];
@@ -91,13 +90,17 @@ public class BaggageTrackingService(
 
     public QrCodeScanResult ProcessQrCodeScan(UserDto requestedUser, string qrCodeData)
     {
-        var ubc = qrCodeDataProcessor.ParseQrCodeData(qrCodeData);
+        var ubc = ubcProcessor.ParseUbc(qrCodeData);
 
-        var user = baggageTrackerDbContext.Users
-            .SingleOrDefault(u => u.Username == ubc.Username);
+        if (!ubcProcessor.ValidateUbc(ubc))
+        {
+            throw new Exception("UBC code is invalid.");
+        }
 
+        var user = baggageTrackerDbContext.Users.SingleOrDefault(u => u.Id == ubc.UserId);
+        
         if ((requestedUser.Id == user?.Id && IsBaggageOwner(user.Id, ubc.BaggageId)) 
-            || (requestedUser is { Role: UserRole.Personnel } && DoesBaggageExist(ubc.BaggageId)))
+            || requestedUser is { Role: UserRole.Personnel })
         {
             return QrCodeScanResult.Success;
         }
@@ -112,8 +115,4 @@ public class BaggageTrackingService(
     
     private bool IsBaggageOwner(long userId, Guid baggageId) => 
         baggageTrackerDbContext.Baggages.Any(b => b.UserId == userId && b.BaggageId == baggageId);
-    
-    private bool DoesBaggageExist(Guid baggageId) => 
-        baggageTrackerDbContext.Baggages.Any(b => b.BaggageId == baggageId);
-
 }

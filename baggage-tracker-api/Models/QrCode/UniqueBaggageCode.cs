@@ -1,10 +1,10 @@
 namespace BaggageTrackerApi.Models.QrCode;
 
-public class UniqueBaggageCode(string flightNumber, string username, Guid baggageId)
+public class UniqueBaggageCode(string flightNumber, long userId, Guid baggageId)
 {
     public string FlightNumber { get; init; } = flightNumber;
     
-    public string Username { get; init; } = username;
+    public long UserId { get; init; } = userId;
     
     public Guid BaggageId { get; init; } = baggageId;
 }
