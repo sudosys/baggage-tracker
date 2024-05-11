@@ -1,5 +1,6 @@
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -21,16 +22,16 @@ public class AuthorizeAttribute(bool personnelOnly = false) : Attribute, IAuthor
 
         if (user == null)
         {
-            context.Result = new JsonResult("Authentication needed to perform this action.");
+            context.Result = new JsonResult(new PlainResponse("Authentication needed to perform this action."));
             context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
         } else if (personnelOnly && user.Role != UserRole.Personnel)
         {
-            context.Result = new JsonResult($"Only {nameof(UserRole.Personnel)} is authorized to perform this action.");
+            context.Result = new JsonResult(new PlainResponse($"Only {nameof(UserRole.Personnel)} is authorized to perform this action."));
             context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
         } else if (!personnelOnly && user.Role == UserRole.Passenger && 
                    userIdParam != null && user.Id.ToString() != userIdParam)
         {
-            context.Result = new JsonResult($"Passenger is not authorized to query another passenger's data");
+            context.Result = new JsonResult(new PlainResponse("Passenger is not authorized to query another passenger's data"));
             context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
         }
     }
