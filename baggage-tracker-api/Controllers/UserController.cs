@@ -1,5 +1,5 @@
 using BaggageTrackerApi.Entities;
-using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Models.Registration;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +28,11 @@ public class UserController(UserService userService) : ControllerBase
         }
         catch (NullReferenceException exception)
         {
-            return NotFound(exception.Message);
+            return NotFound(new PlainResponse(exception.Message));
         }
         catch (InvalidOperationException exception)
         {
-            return BadRequest(exception.Message);
+            return BadRequest(new PlainResponse(exception.Message));
         }
 
         return NoContent();
@@ -62,7 +62,7 @@ public class UserController(UserService userService) : ControllerBase
         }
         catch (Exception e)
         {
-            return NotFound(e.Message);
+            return NotFound(new PlainResponse(e.Message));
         }
     }
 }

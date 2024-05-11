@@ -94,25 +94,21 @@ public class BaggageTrackingService(
 
         if (!ubcProcessor.ValidateUbc(ubc))
         {
-            throw new Exception("UBC code is invalid.");
+            return QrCodeScanResult.CodeInvalid;
         }
 
         var user = baggageTrackerDbContext.Users.SingleOrDefault(u => u.Id == ubc.UserId);
+        var isBaggageOwner = IsBaggageOwner(user?.Id, ubc.BaggageId); 
         
-        if ((requestedUser.Id == user?.Id && IsBaggageOwner(user.Id, ubc.BaggageId)) 
-            || requestedUser is { Role: UserRole.Personnel })
+        if (isBaggageOwner && (requestedUser.Id == user?.Id 
+                               || requestedUser is { Role: UserRole.Personnel }))
         {
             return QrCodeScanResult.Success;
         }
         
-        if (requestedUser.Id != user?.Id && requestedUser is { Role: UserRole.Passenger })
-        {
-            return QrCodeScanResult.NotOwnedByPassenger;
-        }
-
-        return QrCodeScanResult.UnknownError;
+        return QrCodeScanResult.NotOwnedByPassenger;
     }
     
-    private bool IsBaggageOwner(long userId, Guid baggageId) => 
+    private bool IsBaggageOwner(long? userId, Guid baggageId) => 
         baggageTrackerDbContext.Baggages.Any(b => b.UserId == userId && b.BaggageId == baggageId);
 }

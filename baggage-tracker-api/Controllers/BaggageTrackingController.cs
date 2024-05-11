@@ -1,6 +1,7 @@
 using BaggageTrackerApi.Attributes;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +28,7 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
         }
         catch (Exception e)
         {
-            return NotFound(e.Message);
+            return NotFound(new PlainResponse(e.Message));
         }
     }
 
@@ -42,7 +43,7 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return BadRequest(new PlainResponse(e.Message));
         }
     }
     
@@ -58,7 +59,7 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return BadRequest(new PlainResponse(e.Message));
         }
     }
     
@@ -71,11 +72,12 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
         switch (status)
         {
             case QrCodeScanResult.Success:
-                return Ok(status.ToString());
+                return Ok(new PlainResponse(status.ToString()));
             case QrCodeScanResult.NotOwnedByPassenger:
+            case QrCodeScanResult.CodeInvalid:
             case QrCodeScanResult.UnknownError:
             default:
-                return BadRequest(status.ToString());
+                return BadRequest(new PlainResponse(status.ToString()));
         }
     }
 }

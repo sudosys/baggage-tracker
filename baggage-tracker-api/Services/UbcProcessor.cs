@@ -20,7 +20,7 @@ public class UbcProcessor(BaggageTrackerDbContext baggageTrackerDbContext)
 
         return new UniqueBaggageCode(
             flightNumber: fragments[0],
-            userId: int.Parse(fragments[1]),
+            userId: long.Parse(fragments[1]),
             baggageId: fragments[2].ParseAsGuid());
     }
 
