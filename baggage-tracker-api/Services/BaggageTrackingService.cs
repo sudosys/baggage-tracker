@@ -65,7 +65,12 @@ public class BaggageTrackingService(
 
         if (baggage == null)
         {
-            throw new Exception($"Baggage with id {baggageId} does not exist");
+            throw new Exception($"Baggage with id '{baggageId}' does not exist");
+        }
+
+        if (baggage.BaggageStatus == newStatus)
+        {
+            throw new Exception($"Baggage with id '{baggageId}' already marked as '{newStatus}'");
         }
 
         baggage.BaggageStatus = newStatus;
