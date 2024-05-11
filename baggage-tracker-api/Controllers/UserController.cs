@@ -53,7 +53,7 @@ public class UserController(UserService userService) : ControllerBase
     }
     
     [HttpGet("{flightNumber}")]
-    public ActionResult<List<User>> GetUsersByFlightNumber([FromQuery] string flightNumber)
+    public ActionResult<List<User>> GetUsersByFlightNumber([FromRoute] string flightNumber)
     {
         try
         {
