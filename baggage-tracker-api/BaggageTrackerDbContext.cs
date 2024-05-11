@@ -19,6 +19,12 @@ public class BaggageTrackerDbContext(DbContextOptions<BaggageTrackerDbContext> o
         base.OnModelCreating(modelBuilder);
     }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<Enum>().HaveConversion<string>();
+        base.ConfigureConventions(configurationBuilder);
+    }
+
     private static void ConstructRelations(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()

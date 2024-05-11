@@ -23,7 +23,7 @@ namespace BaggageTrackerApi.Migrations
                     Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     FullName = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     Password = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    Role = table.Column<int>(type: "integer", nullable: false)
+                    Role = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,7 +37,7 @@ namespace BaggageTrackerApi.Migrations
                     BaggageId = table.Column<Guid>(type: "uuid", nullable: false),
                     BaggageName = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    BaggageStatus = table.Column<int>(type: "integer", nullable: false)
+                    BaggageStatus = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,9 +75,10 @@ namespace BaggageTrackerApi.Migrations
                 columns: new[] { "Id", "FullName", "Password", "Role", "Username" },
                 values: new object[,]
                 {
-                    { 1L, "Avery Thompson", "711f24d8676c4462bcb9b8d6ff12e524483afcff5ea9ba726fba772c296b214c", 0, "avery.thompson" },
-                    { 2L, "Sebastian Morales", "46498d3d669434f320a45770a9b8ab8cbc16bd7dfeeb724c5503b2cb9d3d395e", 0, "sebastian.morales" },
-                    { 3L, "Olivia Martinez", "0cc4bbe5ac4df909798c2ccd0844f15a86a694457758e42d9ce52e7d39e9e256", 0, "olivia.martinez" }
+                    { 1L, "Avery Thompson", "711f24d8676c4462bcb9b8d6ff12e524483afcff5ea9ba726fba772c296b214c", "Passenger", "avery.thompson" },
+                    { 2L, "Sebastian Morales", "46498d3d669434f320a45770a9b8ab8cbc16bd7dfeeb724c5503b2cb9d3d395e", "Passenger", "sebastian.morales" },
+                    { 3L, "Olivia Martinez", "0cc4bbe5ac4df909798c2ccd0844f15a86a694457758e42d9ce52e7d39e9e256", "Passenger", "olivia.martinez" },
+                    { 4L, "Lukas Cruz", "9a18e4407334e70436cc60b0c53e8f384fc4d0934d2bc3c7d70573b63fc72a64", "Personnel", "lukas.cruz" }
                 });
 
             migrationBuilder.InsertData(
@@ -85,12 +86,12 @@ namespace BaggageTrackerApi.Migrations
                 columns: new[] { "BaggageId", "BaggageName", "BaggageStatus", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("0cfbee9a-1827-4990-b581-cb644739490f"), "Samsonite Popsoda", 0, 2L },
-                    { new Guid("2538de81-0574-4ec8-9316-d03aadf054b9"), "Fantana Matrix PP Hard Shell", 0, 3L },
-                    { new Guid("30ae8b2e-53eb-4a7b-90e8-a47292e25ec9"), "Canvas Explorer Holdall", 0, 3L },
-                    { new Guid("60a2b446-f4f6-43fb-a7be-6f9e82c91677"), "Blue Samsonite Case", 0, 1L },
-                    { new Guid("7c620188-aa3c-4224-92b9-478629c59862"), "Benetti Sports Bag", 0, 1L },
-                    { new Guid("de400235-14a7-416d-b50f-a51ac5a3ba30"), "Lightweight PP Collection", 0, 1L }
+                    { new Guid("0543b03e-7449-4507-adf2-5d24f248c678"), "Samsonite Popsoda", "Undefined", 2L },
+                    { new Guid("0d58ae42-ca7b-43f1-8502-3d5d9b2c4eae"), "Benetti Sports Bag", "Undefined", 1L },
+                    { new Guid("55cc9206-a6c7-4f32-8a3f-5e5142ff400e"), "Canvas Explorer Holdall", "Undefined", 3L },
+                    { new Guid("6bd8c8db-a5ba-4e29-a7ae-a3786a98ec01"), "Blue Samsonite Case", "Undefined", 1L },
+                    { new Guid("8f161fdd-3549-49e6-aa59-1de5ca1383d5"), "Fantana Matrix PP Hard Shell", "Undefined", 3L },
+                    { new Guid("b42c7dd7-8fcd-477f-9822-7bd14862e3b8"), "Lightweight PP Collection", "Undefined", 1L }
                 });
 
             migrationBuilder.InsertData(

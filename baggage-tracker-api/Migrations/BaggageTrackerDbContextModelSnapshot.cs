@@ -33,8 +33,9 @@ namespace BaggageTrackerApi.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("BaggageStatus")
-                        .HasColumnType("integer");
+                    b.Property<string>("BaggageStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -48,44 +49,44 @@ namespace BaggageTrackerApi.Migrations
                     b.HasData(
                         new
                         {
-                            BaggageId = new Guid("60a2b446-f4f6-43fb-a7be-6f9e82c91677"),
+                            BaggageId = new Guid("6bd8c8db-a5ba-4e29-a7ae-a3786a98ec01"),
                             BaggageName = "Blue Samsonite Case",
-                            BaggageStatus = 0,
+                            BaggageStatus = "Undefined",
                             UserId = 1L
                         },
                         new
                         {
-                            BaggageId = new Guid("7c620188-aa3c-4224-92b9-478629c59862"),
+                            BaggageId = new Guid("0d58ae42-ca7b-43f1-8502-3d5d9b2c4eae"),
                             BaggageName = "Benetti Sports Bag",
-                            BaggageStatus = 0,
+                            BaggageStatus = "Undefined",
                             UserId = 1L
                         },
                         new
                         {
-                            BaggageId = new Guid("de400235-14a7-416d-b50f-a51ac5a3ba30"),
+                            BaggageId = new Guid("b42c7dd7-8fcd-477f-9822-7bd14862e3b8"),
                             BaggageName = "Lightweight PP Collection",
-                            BaggageStatus = 0,
+                            BaggageStatus = "Undefined",
                             UserId = 1L
                         },
                         new
                         {
-                            BaggageId = new Guid("0cfbee9a-1827-4990-b581-cb644739490f"),
+                            BaggageId = new Guid("0543b03e-7449-4507-adf2-5d24f248c678"),
                             BaggageName = "Samsonite Popsoda",
-                            BaggageStatus = 0,
+                            BaggageStatus = "Undefined",
                             UserId = 2L
                         },
                         new
                         {
-                            BaggageId = new Guid("2538de81-0574-4ec8-9316-d03aadf054b9"),
+                            BaggageId = new Guid("8f161fdd-3549-49e6-aa59-1de5ca1383d5"),
                             BaggageName = "Fantana Matrix PP Hard Shell",
-                            BaggageStatus = 0,
+                            BaggageStatus = "Undefined",
                             UserId = 3L
                         },
                         new
                         {
-                            BaggageId = new Guid("30ae8b2e-53eb-4a7b-90e8-a47292e25ec9"),
+                            BaggageId = new Guid("55cc9206-a6c7-4f32-8a3f-5e5142ff400e"),
                             BaggageName = "Canvas Explorer Holdall",
-                            BaggageStatus = 0,
+                            BaggageStatus = "Undefined",
                             UserId = 3L
                         });
                 });
@@ -152,8 +153,9 @@ namespace BaggageTrackerApi.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -170,7 +172,7 @@ namespace BaggageTrackerApi.Migrations
                             Id = 1L,
                             FullName = "Avery Thompson",
                             Password = "711f24d8676c4462bcb9b8d6ff12e524483afcff5ea9ba726fba772c296b214c",
-                            Role = 0,
+                            Role = "Passenger",
                             Username = "avery.thompson"
                         },
                         new
@@ -178,7 +180,7 @@ namespace BaggageTrackerApi.Migrations
                             Id = 2L,
                             FullName = "Sebastian Morales",
                             Password = "46498d3d669434f320a45770a9b8ab8cbc16bd7dfeeb724c5503b2cb9d3d395e",
-                            Role = 0,
+                            Role = "Passenger",
                             Username = "sebastian.morales"
                         },
                         new
@@ -186,8 +188,16 @@ namespace BaggageTrackerApi.Migrations
                             Id = 3L,
                             FullName = "Olivia Martinez",
                             Password = "0cc4bbe5ac4df909798c2ccd0844f15a86a694457758e42d9ce52e7d39e9e256",
-                            Role = 0,
+                            Role = "Passenger",
                             Username = "olivia.martinez"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            FullName = "Lukas Cruz",
+                            Password = "9a18e4407334e70436cc60b0c53e8f384fc4d0934d2bc3c7d70573b63fc72a64",
+                            Role = "Personnel",
+                            Username = "lukas.cruz"
                         });
                 });
 
