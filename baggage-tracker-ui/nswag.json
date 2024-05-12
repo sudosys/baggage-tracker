@@ -10,7 +10,7 @@
 	},
 	"codeGenerators": {
 		"openApiToTypeScriptClient": {
-			"className": "BaggageTrackerService",
+			"className": "BaggageTrackerClient",
 			"moduleName": "",
 			"namespace": "",
 			"typeScriptVersion": 5.4,
