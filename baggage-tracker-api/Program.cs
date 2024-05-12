@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BaggageTrackerApi.Middlewares;
 using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Services;
@@ -50,7 +51,10 @@ public class Program
                 }
             });
         });
-        builder.Services.AddControllers();
+        
+        builder.Services.AddControllers()
+            .AddJsonOptions(options => 
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         ConfigureServices(builder);
         RegisterServices(builder.Services);

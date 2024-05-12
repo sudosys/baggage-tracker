@@ -14,7 +14,7 @@ public class UserDto
     [StringLength(150)]
     public required string FullName { get; init; }
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    
     public required UserRole Role { get; init; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

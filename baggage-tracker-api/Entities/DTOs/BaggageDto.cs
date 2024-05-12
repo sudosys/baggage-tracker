@@ -9,6 +9,6 @@ public class BaggageDto
     [MaxLength(150)]
     public string BaggageName { get; init; } = null!;
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    
     public BaggageStatus BaggageStatus { get; init; }
 }

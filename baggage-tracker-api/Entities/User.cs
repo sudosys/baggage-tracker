@@ -35,7 +35,7 @@ public sealed class User(UserRole role, string username, string fullName, string
     [JsonIgnore]
     public string Password { get; init; } = password;
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    
     public required UserRole Role { get; init; } = role;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

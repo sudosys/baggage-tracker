@@ -6,7 +6,7 @@ namespace BaggageTrackerApi.Models.Authentication;
 
 public class AuthenticationResponse(AuthenticationStatus status, UserSlimDto? user, string? token)
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    
     public AuthenticationStatus Status { get; init; } = status;
     
     public UserSlimDto? User { get; init; } = user;
