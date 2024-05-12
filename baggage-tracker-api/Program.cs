@@ -57,6 +57,9 @@ public class Program
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         ConfigureServices(builder);
+
+        var corsPolicyName = GetCorsSettings(builder).GetSection("DefaultPolicyName").Get<string>();
+        ConfigureCors(builder, corsPolicyName!);
         RegisterServices(builder.Services);
 
         var app = builder.Build();
@@ -70,6 +73,8 @@ public class Program
 
         app.UseRouting();
 
+        app.UseCors(corsPolicyName!);
+
         app.MapControllers();
 
         app.UseHttpsRedirection();
@@ -82,8 +87,7 @@ public class Program
 
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
-        var appSettingsSection = builder.Configuration.GetSection("AppSettings");
-        builder.Services.Configure<AppSettings>(appSettingsSection);
+        builder.Services.Configure<AppSettings>(GetAppSettings(builder));
         
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services
@@ -93,6 +97,29 @@ public class Program
         builder.Services
             .AddAutoMapper(cfg => 
                 cfg.AddProfile(new AutoMapperProfile()));
+    }
+
+    private static void ConfigureCors(WebApplicationBuilder builder, string policyName)
+    {
+        var allowedOrigins = GetCorsSettings(builder).GetSection("AllowedOrigins").Get<string[]>();
+        
+        builder.Services
+            .AddCors(option => 
+                option.AddPolicy(name: policyName, policyBuilder => policyBuilder
+                        .WithOrigins(allowedOrigins!)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()));
+
+    }
+
+    private static IConfigurationSection GetAppSettings(WebApplicationBuilder builder)
+    {
+        return builder.Configuration.GetSection("AppSettings");
+    }
+    
+    private static IConfigurationSection GetCorsSettings(WebApplicationBuilder builder)
+    {
+        return builder.Configuration.GetSection("AppSettings:Cors");
     }
 
     private static void RegisterServices(IServiceCollection services)
