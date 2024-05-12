@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "baggage-tracker-ui:build:production"
+              "buildTarget": "baggage-tracker-ui:build:production"
             },
             "development": {
-              "browserTarget": "baggage-tracker-ui:build:development"
+              "buildTarget": "baggage-tracker-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "baggage-tracker-ui:build"
+            "buildTarget": "baggage-tracker-ui:build"
           }
         },
         "test": {
