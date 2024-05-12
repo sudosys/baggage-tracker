@@ -1,4 +1,14 @@
-<header class="d-flex align-items-center justify-content-start w-100 p-2">
-	<i class="ms-2 bi bi-briefcase-fill"></i>
-	<h3 class="product-title ms-2">Baggage Tracker</h3>
+<header class="d-flex align-items-center justify-content-between w-100 p-2">
+	<div>
+		<i class="ms-2 bi bi-briefcase-fill"></i>
+		<h3 class="product-title ms-2 d-inline">Baggage Tracker</h3>
+	</div>
+
+	@if (UserService.userInfo) {
+		<p-button
+			label="Logout"
+			severity="secondary"
+			(click)="onClickLogout()"
+		></p-button>
+	}
 </header>

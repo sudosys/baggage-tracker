@@ -3,7 +3,8 @@ import {
 	AuthenticationRequest,
 	AuthenticationResponse,
 	AuthenticationStatus,
-	BaggageTrackerClient
+	BaggageTrackerClient,
+	UserSlimDto
 } from '../../../../open-api/bt-api.client';
 import { catchError, of, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -19,7 +20,10 @@ export class UserService {
 		private messageService: MessageService
 	) {}
 
-	private tokenKey = 'token';
+	static tokenKey = 'token';
+	static userKey = 'user';
+
+	static userInfo: UserSlimDto | undefined = UserService.getUserInfo();
 
 	login(username: string, password: string) {
 		const authRequest: AuthenticationRequest = {
@@ -31,24 +35,37 @@ export class UserService {
 			catchError((errorResponse: AuthenticationResponse) => {
 				this.messageService.add({
 					severity: 'error',
-					summary: 'Authentication failed'
+					summary: 'Error',
+					detail: 'Authentication failed'
 				});
 				return of(errorResponse);
 			}),
-			tap((response) => {
+			tap(async (response) => {
 				if (response.status == AuthenticationStatus.Success) {
-					this.addTokenToLocalStorage(response.token!);
+					this.attachUserToContext(response.token!, response.user!);
+					await this.router.navigateByUrl('/home');
+					UserService.userInfo = response.user!;
+				} else {
+					throw new Error(response.status);
 				}
 			})
 		);
 	}
 
 	async logout(): Promise<void> {
-		window.localStorage.removeItem(this.tokenKey);
+		window.localStorage.removeItem(UserService.tokenKey);
+		window.localStorage.removeItem(UserService.userKey);
+		UserService.userInfo = undefined;
 		await this.router.navigateByUrl('login');
 	}
 
-	private addTokenToLocalStorage(token: string): void {
-		window.localStorage.setItem(this.tokenKey, token);
+	private attachUserToContext(token: string, user: UserSlimDto): void {
+		window.localStorage.setItem(UserService.tokenKey, token);
+		window.localStorage.setItem(UserService.userKey, JSON.stringify(user));
+	}
+
+	private static getUserInfo(): UserSlimDto | undefined {
+		const user = window.localStorage.getItem(UserService.userKey);
+		return user ? JSON.parse(user) : undefined;
 	}
 }

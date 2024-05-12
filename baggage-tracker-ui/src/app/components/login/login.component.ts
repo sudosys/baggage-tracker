@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { UserService } from '../../services/user-service/user.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationRequest } from '../../../../open-api/bt-api.client';
@@ -17,10 +17,13 @@ export class LoginComponent implements OnInit {
 
 	loginForm: FormGroup<FormOf<AuthenticationRequest>>;
 
+	protected readonly Object = Object;
+
 	ngOnInit(): void {
 		this.createForm();
 	}
 
+	@HostListener('document:keyup.enter', ['$event'])
 	onClickLogin(): void {
 		this.triggerValidation();
 
@@ -45,6 +48,4 @@ export class LoginComponent implements OnInit {
 			password: new FormControl('', [Validators.required])
 		});
 	}
-
-	protected readonly Object = Object;
 }
