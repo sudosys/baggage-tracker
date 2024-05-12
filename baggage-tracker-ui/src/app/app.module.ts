@@ -5,10 +5,15 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { HeaderComponent } from './components/common/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { API_BASE_URL } from '../../open-api/bt-api.client';
 import { environment } from '../environments/environment.development';
 import { HttpClientModule } from '@angular/common/http';
+import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
 	declarations: [AppComponent, LoginComponent, HeaderComponent],
@@ -16,10 +21,18 @@ import { HttpClientModule } from '@angular/common/http';
 		BrowserModule,
 		AppRoutingModule,
 		InputTextModule,
+		PasswordModule,
 		FormsModule,
-		HttpClientModule
+		ButtonModule,
+		ToastModule,
+		HttpClientModule,
+		BrowserAnimationsModule,
+		ReactiveFormsModule
 	],
-	providers: [{ provide: API_BASE_URL, useValue: environment.apiBaseUrl }],
+	providers: [
+		{ provide: API_BASE_URL, useValue: environment.apiBaseUrl },
+		MessageService
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule {}
