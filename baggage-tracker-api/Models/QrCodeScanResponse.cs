@@ -1,10 +1,11 @@
+using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
 
 namespace BaggageTrackerApi.Models;
 
-public class QrCodeScanResponse(string? baggageId, QrCodeScanResult scanResult)
+public class QrCodeScanResponse(BaggageDto? baggage, QrCodeScanResult scanResult)
 {
-    public string? BaggageId { get; set; } = baggageId;
+    public BaggageDto? Baggage { get; set; } = baggage;
 
     public QrCodeScanResult ScanResult { get; set; } = scanResult;
 }

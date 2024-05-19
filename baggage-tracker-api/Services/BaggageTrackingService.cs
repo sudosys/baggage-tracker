@@ -111,7 +111,7 @@ public class BaggageTrackingService(
         if (baggage != null && (requestedUser.Id == user?.Id 
                                || requestedUser is { Role: UserRole.Personnel }))
         {
-            return new QrCodeScanResponse(baggage.BaggageId.ToString(), QrCodeScanResult.Success);
+            return new QrCodeScanResponse(mapper.Map<BaggageDto>(baggage), QrCodeScanResult.Success);
         }
 
         return new QrCodeScanResponse(null, QrCodeScanResult.NotOwnedByPassenger);
