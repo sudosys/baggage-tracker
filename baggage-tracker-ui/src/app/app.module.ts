@@ -22,9 +22,18 @@ import { QrCodeScanComponent } from './components/qr-code-scan/qr-code-scan.comp
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { httpInterceptor } from './services/http-interceptor/http.interceptor';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { PostScanComponent } from './components/post-scan/post-scan.component';
+import { NgOptimizedImage } from '@angular/common';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
-	declarations: [AppComponent, LoginComponent, HeaderComponent, QrCodeScanComponent],
+	declarations: [
+		AppComponent,
+		LoginComponent,
+		HeaderComponent,
+		QrCodeScanComponent,
+		PostScanComponent
+	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
@@ -37,7 +46,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 		BrowserAnimationsModule,
 		ReactiveFormsModule,
 		ZXingScannerModule,
-		ProgressSpinnerModule
+		ProgressSpinnerModule,
+		NgOptimizedImage,
+		DropdownModule
 	],
 	providers: [
 		{ provide: API_BASE_URL, useValue: environment.apiBaseUrl },

@@ -1,10 +1,12 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import {
+	BaggageStatus,
 	BaggageTrackerClient,
-	QrCodeScanResult
+	QrCodeScanResponse
 } from '../../../../open-api/bt-api.client';
-import { tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
 	providedIn: 'root'
@@ -12,17 +14,41 @@ import { Router } from '@angular/router';
 export class BaggageTrackingService {
 	constructor(
 		private btClient: BaggageTrackerClient,
-		private router: Router
+		private router: Router,
+		private messageService: MessageService
 	) {}
 
-	qrCodeScanResult = signal(QrCodeScanResult.UnknownError);
+	qrCodeScanResult: WritableSignal<QrCodeScanResponse | undefined> = signal(undefined);
 
 	scanQrCode(qrCodeData: string) {
 		return this.btClient.qrCodeScan(qrCodeData).pipe(
-			tap(async (result: QrCodeScanResult) => {
+			tap(async (result: QrCodeScanResponse) => {
 				this.qrCodeScanResult.set(result);
 				await this.router.navigateByUrl('post-scan');
 			})
 		);
+	}
+
+	setBaggageStatus(status: BaggageStatus) {
+		return this.btClient
+			.baggageStatus(this.qrCodeScanResult()?.baggageId, status)
+			.pipe(
+				catchError((error: Error) => {
+					this.messageService.add({
+						severity: 'error',
+						summary: 'Error',
+						detail: error.message
+					});
+					return of();
+				}),
+				tap(async () => {
+					this.messageService.add({
+						severity: 'success',
+						summary: 'Status updated',
+						detail: 'Status updated successfully.'
+					});
+					await this.router.navigateByUrl('home');
+				})
+			);
 	}
 }

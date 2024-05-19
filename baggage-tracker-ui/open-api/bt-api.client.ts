@@ -260,7 +260,7 @@ export class BaggageTrackerClient {
      * @param qrCodeData (optional) 
      * @return Success
      */
-    qrCodeScan(qrCodeData: string | undefined): Observable<QrCodeScanResult> {
+    qrCodeScan(qrCodeData: string | undefined): Observable<QrCodeScanResponse> {
         let url_ = this.baseUrl + "/api/BaggageTracking/qr-code-scan?";
         if (qrCodeData === null)
             throw new Error("The parameter 'qrCodeData' cannot be null.");
@@ -283,14 +283,14 @@ export class BaggageTrackerClient {
                 try {
                     return this.processQrCodeScan(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<QrCodeScanResult>;
+                    return _observableThrow(e) as any as Observable<QrCodeScanResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<QrCodeScanResult>;
+                return _observableThrow(response_) as any as Observable<QrCodeScanResponse>;
         }));
     }
 
-    protected processQrCodeScan(response: HttpResponseBase): Observable<QrCodeScanResult> {
+    protected processQrCodeScan(response: HttpResponseBase): Observable<QrCodeScanResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -301,8 +301,7 @@ export class BaggageTrackerClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = QrCodeScanResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -816,6 +815,46 @@ export class Flight implements IFlight {
 export interface IFlight {
     id?: number;
     flightNumber?: string | undefined;
+}
+
+export class QrCodeScanResponse implements IQrCodeScanResponse {
+    baggageId?: string | undefined;
+    scanResult?: QrCodeScanResult;
+
+    constructor(data?: IQrCodeScanResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.baggageId = _data["baggageId"];
+            this.scanResult = _data["scanResult"];
+        }
+    }
+
+    static fromJS(data: any): QrCodeScanResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new QrCodeScanResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["baggageId"] = this.baggageId;
+        data["scanResult"] = this.scanResult;
+        return data;
+    }
+}
+
+export interface IQrCodeScanResponse {
+    baggageId?: string | undefined;
+    scanResult?: QrCodeScanResult;
 }
 
 export enum QrCodeScanResult {
