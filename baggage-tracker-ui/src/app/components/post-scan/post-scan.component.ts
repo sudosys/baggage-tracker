@@ -8,7 +8,6 @@ import {
 } from '../../../../open-api/bt-api.client';
 import { UserService } from '../../services/user-service/user.service';
 import { Router } from '@angular/router';
-import { toTitleCase } from '../../extensions/string.extension';
 import { DropdownOption } from '../../models/dropdown-option.model';
 
 @Component({
@@ -27,7 +26,6 @@ export class PostScanComponent implements OnInit {
 	protected readonly UserService = UserService;
 	protected readonly UserRole = UserRole;
 	protected readonly BaggageStatus = BaggageStatus;
-	protected readonly toTitleCase = toTitleCase;
 	protected readonly String = String;
 
 	protected selectedStatus = BaggageStatus.Undefined;
@@ -55,7 +53,12 @@ export class PostScanComponent implements OnInit {
 
 	private mapStatusesToOptions(statuses: BaggageStatus[]) {
 		this.statusOptions = statuses.map((o: BaggageStatus) => {
-			return <DropdownOption>{ displayName: toTitleCase(o), value: o };
+			return <DropdownOption>{
+				displayName: o.toTitleCase(),
+				value: o
+			};
 		});
 	}
+
+	protected toTitleCase = (input: string) => input.toTitleCase();
 }

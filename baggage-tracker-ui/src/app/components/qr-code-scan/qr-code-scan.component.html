@@ -8,7 +8,7 @@
 			(camerasFound)="onCameraFound()"
 			(camerasNotFound)="onCameraNotFound()"
 			(scanFailure)="onScanFailed()"
-			(scanComplete)="onScanComplete($event?.getText())"
+			(scanComplete)="$event && onScanComplete($event.getText())"
 		></zxing-scanner>
 		@if (!scanEnabled) {
 			<p-progressSpinner></p-progressSpinner>
