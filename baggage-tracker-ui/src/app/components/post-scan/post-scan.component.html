@@ -6,10 +6,16 @@
 	} @else if (UserService.userInfo?.role == UserRole.Personnel) {
 		<ng-container *ngTemplateOutlet="personnelScan"></ng-container>
 	}
+
+	<ng-container *ngTemplateOutlet="otherScanConditions"></ng-container>
 </section>
 
 <ng-template #passengerScan>
-	@if (btService.qrCodeScanResult() == QrCodeScanResult.Success) {
+	@if (
+		btService.qrCodeScanResult()?.scanResult == QrCodeScanResult.Success &&
+		btService.qrCodeScanResult()?.baggage?.baggageStatus !=
+			BaggageStatus.ReceivedByThePassenger
+	) {
 		<p>You received your baggage!<br />You can mark it as 'received' down below.</p>
 
 		<p-button
@@ -18,17 +24,10 @@
 			label="Received By The Passenger"
 			(onClick)="setBaggageStatus(BaggageStatus.ReceivedByThePassenger)"
 		/>
-	} @else if (btService.qrCodeScanResult() == QrCodeScanResult.NotOwnedByPassenger) {
+	} @else if (
+		btService.qrCodeScanResult()?.scanResult == QrCodeScanResult.NotOwnedByPassenger
+	) {
 		<p>Baggage does not belong to you.</p>
-
-		<p-button
-			class="mt-3"
-			icon="bi bi-chevron-left"
-			label="Return to main menu"
-			(onClick)="router.navigateByUrl('home')"
-		/>
-	} @else if (btService.qrCodeScanResult() == QrCodeScanResult.CodeInvalid) {
-		<p>Baggage QR Code is invalid.</p>
 
 		<p-button
 			class="mt-3"
@@ -40,7 +39,11 @@
 </ng-template>
 
 <ng-template #personnelScan>
-	@if (btService.qrCodeScanResult() == QrCodeScanResult.Success) {
+	@if (
+		btService.qrCodeScanResult()?.scanResult == QrCodeScanResult.Success &&
+		btService.qrCodeScanResult()?.baggage?.baggageStatus !=
+			BaggageStatus.ReceivedByThePassenger
+	) {
 		<p>Please set the appropriate baggage status.</p>
 
 		<p-dropdown
@@ -54,8 +57,24 @@
 			label="Set Status"
 			(onClick)="setBaggageStatus(selectedStatus)"
 		/>
-	} @else if (btService.qrCodeScanResult() == QrCodeScanResult.CodeInvalid) {
+	}
+</ng-template>
+
+<ng-template #otherScanConditions>
+	@if (btService.qrCodeScanResult()?.scanResult == QrCodeScanResult.CodeInvalid) {
 		<p>Baggage QR Code is invalid.</p>
+
+		<p-button
+			class="mt-3"
+			icon="bi bi-chevron-left"
+			label="Return to main menu"
+			(onClick)="router.navigateByUrl('home')"
+		/>
+	} @else if (
+		btService.qrCodeScanResult()?.baggage?.baggageStatus ==
+		BaggageStatus.ReceivedByThePassenger
+	) {
+		<p>Baggage already received by passenger.</p>
 
 		<p-button
 			class="mt-3"
@@ -67,20 +86,23 @@
 </ng-template>
 
 <ng-template #title>
-	<div>
-		@if (btService.qrCodeScanResult() == QrCodeScanResult.Success) {
+	<div class="d-flex flex-column align-items-center">
+		@if (btService.qrCodeScanResult()?.scanResult == QrCodeScanResult.Success) {
 			<img
-				ngSrc="../../../assets/successful-scan.png"
+				class="title-icon"
+				src="../../../assets/successful-scan.png"
 				alt="Successful Scan"
-				style="object-fit: contain; width: 200px"
 			/>
 
 			<h3 class="mt-2">Scan Successful</h3>
+			<h4 class="mt-2">
+				Baggage Name: "{{ btService.qrCodeScanResult()?.baggage?.baggageName }}"
+			</h4>
 		} @else {
 			<img
-				ngSrc="../../../assets/failed-scan.png"
+				class="title-icon"
+				src="../../../assets/failed-scan.png"
 				alt="Failed Scan"
-				style="object-fit: contain; width: 200px"
 			/>
 
 			<h3 class="mt-2">Scan Failed</h3>

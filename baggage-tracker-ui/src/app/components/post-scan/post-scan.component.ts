@@ -16,7 +16,6 @@ import { Router } from '@angular/router';
 export class PostScanComponent {
 	constructor(
 		protected btService: BaggageTrackingService,
-		protected userService: UserService,
 		protected router: Router
 	) {}
 
@@ -24,12 +23,11 @@ export class PostScanComponent {
 	protected readonly UserService = UserService;
 	protected readonly UserRole = UserRole;
 	protected readonly BaggageStatus = BaggageStatus;
+	protected readonly Object = Object;
 
 	protected selectedStatus = BaggageStatus.Undefined;
 
 	protected setBaggageStatus(status: BaggageStatus) {
 		this.btService.setBaggageStatus(status).subscribe();
 	}
-
-	protected readonly Object = Object;
 }
