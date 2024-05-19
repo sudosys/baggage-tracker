@@ -445,6 +445,10 @@
       "BaggageDto": {
         "type": "object",
         "properties": {
+          "baggageId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "baggageName": {
             "maxLength": 150,
             "type": "string",
@@ -486,9 +490,8 @@
       "QrCodeScanResponse": {
         "type": "object",
         "properties": {
-          "baggageId": {
-            "type": "string",
-            "nullable": true
+          "baggage": {
+            "$ref": "#/components/schemas/BaggageDto"
           },
           "scanResult": {
             "$ref": "#/components/schemas/QrCodeScanResult"

@@ -729,6 +729,7 @@ export interface IBaggage {
 }
 
 export class BaggageDto implements IBaggageDto {
+    baggageId?: string;
     baggageName?: string | undefined;
     baggageStatus?: BaggageStatus;
 
@@ -743,6 +744,7 @@ export class BaggageDto implements IBaggageDto {
 
     init(_data?: any) {
         if (_data) {
+            this.baggageId = _data["baggageId"];
             this.baggageName = _data["baggageName"];
             this.baggageStatus = _data["baggageStatus"];
         }
@@ -757,6 +759,7 @@ export class BaggageDto implements IBaggageDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["baggageId"] = this.baggageId;
         data["baggageName"] = this.baggageName;
         data["baggageStatus"] = this.baggageStatus;
         return data;
@@ -764,6 +767,7 @@ export class BaggageDto implements IBaggageDto {
 }
 
 export interface IBaggageDto {
+    baggageId?: string;
     baggageName?: string | undefined;
     baggageStatus?: BaggageStatus;
 }
@@ -818,7 +822,7 @@ export interface IFlight {
 }
 
 export class QrCodeScanResponse implements IQrCodeScanResponse {
-    baggageId?: string | undefined;
+    baggage?: BaggageDto;
     scanResult?: QrCodeScanResult;
 
     constructor(data?: IQrCodeScanResponse) {
@@ -832,7 +836,7 @@ export class QrCodeScanResponse implements IQrCodeScanResponse {
 
     init(_data?: any) {
         if (_data) {
-            this.baggageId = _data["baggageId"];
+            this.baggage = _data["baggage"] ? BaggageDto.fromJS(_data["baggage"]) : <any>undefined;
             this.scanResult = _data["scanResult"];
         }
     }
@@ -846,14 +850,14 @@ export class QrCodeScanResponse implements IQrCodeScanResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["baggageId"] = this.baggageId;
+        data["baggage"] = this.baggage ? this.baggage.toJSON() : <any>undefined;
         data["scanResult"] = this.scanResult;
         return data;
     }
 }
 
 export interface IQrCodeScanResponse {
-    baggageId?: string | undefined;
+    baggage?: BaggageDto;
     scanResult?: QrCodeScanResult;
 }
 

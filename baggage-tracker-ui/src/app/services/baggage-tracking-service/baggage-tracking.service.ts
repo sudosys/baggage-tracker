@@ -31,7 +31,7 @@ export class BaggageTrackingService {
 
 	setBaggageStatus(status: BaggageStatus) {
 		return this.btClient
-			.baggageStatus(this.qrCodeScanResult()?.baggageId, status)
+			.baggageStatus(this.qrCodeScanResult()?.baggage?.baggageId, status)
 			.pipe(
 				catchError((error: Error) => {
 					this.messageService.add({
