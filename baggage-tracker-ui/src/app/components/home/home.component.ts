@@ -6,6 +6,7 @@ import { PasswordModule } from 'primeng/password';
 import { UserService } from '../../services/user-service/user.service';
 import { UserRole } from '../../../../open-api/bt-api.client';
 import { RippleModule } from 'primeng/ripple';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-home',
@@ -22,6 +23,12 @@ import { RippleModule } from 'primeng/ripple';
 	styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+	constructor(private router: Router) {}
+
 	protected readonly UserService = UserService;
 	protected readonly UserRole = UserRole;
+
+	async onQrCodeScanClick() {
+		await this.router.navigateByUrl('qr-code-scan');
+	}
 }

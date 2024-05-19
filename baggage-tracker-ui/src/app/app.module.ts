@@ -14,9 +14,11 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { QrCodeScanComponent } from './components/qr-code-scan/qr-code-scan.component';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 @NgModule({
-	declarations: [AppComponent, LoginComponent, HeaderComponent],
+	declarations: [AppComponent, LoginComponent, HeaderComponent, QrCodeScanComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
@@ -27,7 +29,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 		ToastModule,
 		HttpClientModule,
 		BrowserAnimationsModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		ZXingScannerModule
 	],
 	providers: [
 		{ provide: API_BASE_URL, useValue: environment.apiBaseUrl },

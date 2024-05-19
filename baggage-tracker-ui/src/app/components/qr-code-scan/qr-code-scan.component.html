@@ -1,0 +1,22 @@
+<section class="h-100 w-100 d-flex flex-column align-items-center justify-content-around">
+	<h3>Scan Baggage QR Code</h3>
+
+	<div class="p-2">
+		<zxing-scanner
+			[enable]="scanEnabled"
+			(camerasFound)="onCameraFound()"
+			(camerasNotFound)="onCameraNotFound()"
+			(scanFailure)="onScanFailed()"
+			(scanComplete)="onScanComplete($event?.getText())"
+		></zxing-scanner>
+		<h6>
+			@if (scanSuccessful && scanComplete) {
+				QR code scan successful!<i class="ms-2 bi bi-check-lg"></i>
+			} @else if (!scanSuccessful && scanComplete) {
+				QR code scan has failed. Please try again.
+			} @else if (scanEnabled) {
+				Looking for QR Code...
+			}
+		</h6>
+	</div>
+</section>
