@@ -65,4 +65,8 @@ export class BaggageTrackingService {
 			})
 		);
 	}
+
+	trackBaggagesByFlight(flightNumber: string) {
+		return this.btClient.userAll2(flightNumber);
+	}
 }

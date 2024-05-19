@@ -1,0 +1,52 @@
+<section class="h-100 w-100 d-flex flex-column align-items-center justify-content-around">
+	<h3>Track Baggages</h3>
+
+	<div class="d-flex flex-column align-items-center">
+		@if (!returnedInformation) {
+			<input
+				type="text"
+				placeholder="Enter flight number"
+				[(ngModel)]="flightNumber"
+				pInputText
+			/>
+
+			<p-button
+				class="mt-2"
+				label="Get Information"
+				(onClick)="onClickGetInformation()"
+			></p-button>
+		} @else {
+			<h4>
+				For Flight: {{ userBaggageInformation[0].activeFlight?.flightNumber }}
+			</h4>
+			<p-accordion class="p-2 overflow-auto">
+				@for (
+					baggageInformation of userBaggageInformation;
+					track baggageInformation
+				) {
+					<p-accordionTab [header]="baggageInformation.fullName">
+						<table class="table">
+							<thead>
+								<tr>
+									<td class="fw-bolder">Baggage Name</td>
+									<td class="fw-bolder">Status</td>
+								</tr>
+							</thead>
+							<tbody>
+								@for (
+									baggage of baggageInformation.baggages;
+									track baggage
+								) {
+									<tr>
+										<td>{{ baggage.baggageName }}</td>
+										<td>{{ baggage.baggageStatus }}</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</p-accordionTab>
+				}
+			</p-accordion>
+		}
+	</div>
+</section>

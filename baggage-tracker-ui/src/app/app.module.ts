@@ -26,6 +26,8 @@ import { PostScanComponent } from './components/post-scan/post-scan.component';
 import { NgOptimizedImage } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { GenerateQrCodeComponent } from './components/generate-qr-code/generate-qr-code.component';
+import { TrackBaggagesByFlightComponent } from './components/track-baggages-by-flight/track-baggages-by-flight.component';
+import { AccordionModule } from 'primeng/accordion';
 
 @NgModule({
 	declarations: [
@@ -34,7 +36,8 @@ import { GenerateQrCodeComponent } from './components/generate-qr-code/generate-
 		HeaderComponent,
 		QrCodeScanComponent,
 		PostScanComponent,
-		GenerateQrCodeComponent
+		GenerateQrCodeComponent,
+		TrackBaggagesByFlightComponent
 	],
 	imports: [
 		BrowserModule,
@@ -50,7 +53,8 @@ import { GenerateQrCodeComponent } from './components/generate-qr-code/generate-
 		ZXingScannerModule,
 		ProgressSpinnerModule,
 		NgOptimizedImage,
-		DropdownModule
+		DropdownModule,
+		AccordionModule
 	],
 	providers: [
 		{ provide: API_BASE_URL, useValue: environment.apiBaseUrl },

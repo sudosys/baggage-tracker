@@ -35,4 +35,8 @@ export class HomeComponent {
 	async onQrCodeGenerateClick() {
 		await this.router.navigateByUrl('generate-qr-code');
 	}
+
+	async onTrackBaggagesClick() {
+		await this.router.navigateByUrl('track-baggages-by-flight');
+	}
 }
