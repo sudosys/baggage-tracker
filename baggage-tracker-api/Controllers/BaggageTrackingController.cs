@@ -12,8 +12,10 @@ namespace BaggageTrackerApi.Controllers;
 public class BaggageTrackingController(BaggageTrackingService baggageTrackingService) : ControllerBase
 {
     [HttpGet("baggage-qr-code")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
     [Authorize(personnelOnly: true)]
-    public IActionResult GetBaggageQrCodes([FromQuery] string flightNumber)
+    public ActionResult<object> GetBaggageQrCodes([FromQuery] string flightNumber)
     {
         try
         {
