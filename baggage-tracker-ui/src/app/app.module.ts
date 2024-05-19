@@ -21,6 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QrCodeScanComponent } from './components/qr-code-scan/qr-code-scan.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { httpInterceptor } from './services/http-interceptor/http.interceptor';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
 	declarations: [AppComponent, LoginComponent, HeaderComponent, QrCodeScanComponent],
@@ -35,7 +36,8 @@ import { httpInterceptor } from './services/http-interceptor/http.interceptor';
 		HttpClientModule,
 		BrowserAnimationsModule,
 		ReactiveFormsModule,
-		ZXingScannerModule
+		ZXingScannerModule,
+		ProgressSpinnerModule
 	],
 	providers: [
 		{ provide: API_BASE_URL, useValue: environment.apiBaseUrl },

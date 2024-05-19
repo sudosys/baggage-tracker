@@ -3,12 +3,16 @@
 
 	<div class="p-2">
 		<zxing-scanner
+			[class.d-none]="!scanEnabled"
 			[enable]="scanEnabled"
 			(camerasFound)="onCameraFound()"
 			(camerasNotFound)="onCameraNotFound()"
 			(scanFailure)="onScanFailed()"
 			(scanComplete)="onScanComplete($event?.getText())"
 		></zxing-scanner>
+		@if (!scanEnabled) {
+			<p-progressSpinner></p-progressSpinner>
+		}
 		<h6>
 			@if (scanSuccessful && scanComplete) {
 				QR code scan successful!<i class="ms-2 bi bi-check-lg"></i>
