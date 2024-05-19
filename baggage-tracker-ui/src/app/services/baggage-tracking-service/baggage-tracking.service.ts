@@ -7,6 +7,7 @@ import {
 import { catchError, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { FileDownload } from '../../models/file-download.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -19,6 +20,7 @@ export class BaggageTrackingService {
 	) {}
 
 	qrCodeScanResult: WritableSignal<QrCodeScanResponse | undefined> = signal(undefined);
+	fileDownload: WritableSignal<FileDownload | undefined> = signal(undefined);
 
 	scanQrCode(qrCodeData: string) {
 		return this.btClient.qrCodeScan(qrCodeData).pipe(
@@ -50,5 +52,17 @@ export class BaggageTrackingService {
 					await this.router.navigateByUrl('home');
 				})
 			);
+	}
+
+	getBaggageQrCodes(flightNumber: string) {
+		return this.btClient.baggageQrCode(flightNumber).pipe(
+			tap((response) => {
+				const file: FileDownload = {
+					name: response.fileName ?? '',
+					objectUrl: URL.createObjectURL(response.data)
+				};
+				this.fileDownload.set(file);
+			})
+		);
 	}
 }

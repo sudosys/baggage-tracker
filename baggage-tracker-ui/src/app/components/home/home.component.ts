@@ -31,4 +31,8 @@ export class HomeComponent {
 	async onQrCodeScanClick() {
 		await this.router.navigateByUrl('qr-code-scan');
 	}
+
+	async onQrCodeGenerateClick() {
+		await this.router.navigateByUrl('generate-qr-code');
+	}
 }

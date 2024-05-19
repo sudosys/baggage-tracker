@@ -25,6 +25,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PostScanComponent } from './components/post-scan/post-scan.component';
 import { NgOptimizedImage } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
+import { GenerateQrCodeComponent } from './components/generate-qr-code/generate-qr-code.component';
 
 @NgModule({
 	declarations: [
@@ -32,7 +33,8 @@ import { DropdownModule } from 'primeng/dropdown';
 		LoginComponent,
 		HeaderComponent,
 		QrCodeScanComponent,
-		PostScanComponent
+		PostScanComponent,
+		GenerateQrCodeComponent
 	],
 	imports: [
 		BrowserModule,
