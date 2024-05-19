@@ -154,6 +154,64 @@
         }
       }
     },
+    "/api/BaggageTracking/passenger-allowed-statuses": {
+      "get": {
+        "tags": [
+          "BaggageTracking"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlainResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlainResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlainResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BaggageTracking/personnel-allowed-statuses": {
+      "get": {
+        "tags": [
+          "BaggageTracking"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlainResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlainResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlainResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BaggageTracking/qr-code-scan": {
       "post": {
         "tags": [
@@ -482,6 +540,15 @@
             "maxLength": 15,
             "minLength": 0,
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlainResponse": {
+        "type": "object",
+        "properties": {
+          "response": {
             "nullable": true
           }
         },
