@@ -13,8 +13,8 @@ public class BaggageTrackingService(
     UbcProcessor ubcProcessor,
     IMapper mapper)
 {
-    private static readonly BaggageStatus[] PassengerAllowedStatuses = [BaggageStatus.ReceivedByThePassenger];
-    private static readonly BaggageStatus[] PersonnelAllowedStatuses = [
+    public static readonly BaggageStatus[] PassengerAllowedStatuses = [BaggageStatus.ReceivedByThePassenger];
+    public static readonly BaggageStatus[] PersonnelAllowedStatuses = [
         BaggageStatus.WaitingForLoad,
         BaggageStatus.InThePlane,
         BaggageStatus.UnloadedFromThePlane,

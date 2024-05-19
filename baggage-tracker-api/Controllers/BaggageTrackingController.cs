@@ -80,4 +80,14 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
                 return BadRequest(response);
         }
     }
+    
+    [HttpGet("passenger-allowed-statuses")]
+    [Authorize]
+    public ActionResult<PlainResponse> GetPassengerAllowedStatuses() => 
+        Ok(new PlainResponse(BaggageTrackingService.PassengerAllowedStatuses));
+    
+    [HttpGet("personnel-allowed-statuses")]
+    [Authorize(personnelOnly: true)]
+    public ActionResult<PlainResponse> GetPersonnelAllowedStatuses() => 
+        Ok(new PlainResponse(BaggageTrackingService.PersonnelAllowedStatuses));
 }
