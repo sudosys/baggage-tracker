@@ -20,8 +20,8 @@ export class UserService {
 		private messageService: MessageService
 	) {}
 
-	static tokenKey = 'token';
-	static userKey = 'user';
+	static readonly tokenKey = 'token';
+	static readonly userKey = 'user';
 
 	static userInfo: UserSlimDto | undefined = UserService.getUserInfo();
 
