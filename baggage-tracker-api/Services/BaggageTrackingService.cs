@@ -1,6 +1,8 @@
 using AutoMapper;
+using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Models;
 
 namespace BaggageTrackerApi.Services;
 
@@ -54,8 +56,9 @@ public class BaggageTrackingService(
     public void SetBaggageStatus(UserDto user, Guid baggageId, BaggageStatus newStatus)
     {
         ValidateBaggageStatusByRole(user, newStatus);
-        
-        if (user is { Role: UserRole.Passenger } && !IsBaggageOwner(user.Id, baggageId))
+
+        var isBaggageOwner = IsBaggageOwner(user.Id, baggageId) != null;
+        if (user is { Role: UserRole.Passenger } && !isBaggageOwner)
         {
             throw new Exception("Baggage not owned by the passenger");
         }
@@ -93,27 +96,27 @@ public class BaggageTrackingService(
         }
     }
 
-    public QrCodeScanResult ProcessQrCodeScan(UserDto requestedUser, string qrCodeData)
+    public QrCodeScanResponse ProcessQrCodeScan(UserDto requestedUser, string qrCodeData)
     {
         var ubc = ubcProcessor.ParseUbc(qrCodeData);
 
         if (!ubcProcessor.ValidateUbc(ubc))
         {
-            return QrCodeScanResult.CodeInvalid;
+            return new QrCodeScanResponse(null, QrCodeScanResult.CodeInvalid);
         }
 
         var user = baggageTrackerDbContext.Users.SingleOrDefault(u => u.Id == ubc.UserId);
-        var isBaggageOwner = IsBaggageOwner(user?.Id, ubc.BaggageId); 
+        var baggage = IsBaggageOwner(user?.Id, ubc.BaggageId); 
         
-        if (isBaggageOwner && (requestedUser.Id == user?.Id 
+        if (baggage != null && (requestedUser.Id == user?.Id 
                                || requestedUser is { Role: UserRole.Personnel }))
         {
-            return QrCodeScanResult.Success;
+            return new QrCodeScanResponse(baggage.BaggageId.ToString(), QrCodeScanResult.Success);
         }
-        
-        return QrCodeScanResult.NotOwnedByPassenger;
+
+        return new QrCodeScanResponse(null, QrCodeScanResult.NotOwnedByPassenger);
     }
     
-    private bool IsBaggageOwner(long? userId, Guid baggageId) => 
-        baggageTrackerDbContext.Baggages.Any(b => b.UserId == userId && b.BaggageId == baggageId);
+    private Baggage? IsBaggageOwner(long? userId, Guid baggageId) => 
+        baggageTrackerDbContext.Baggages.SingleOrDefault(b => b.UserId == userId && b.BaggageId == baggageId);
 }

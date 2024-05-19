@@ -65,19 +65,19 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
     
     [HttpPost("qr-code-scan")]
     [Authorize]
-    public ActionResult<QrCodeScanResult> ProcessQrCodeScan([FromQuery] string qrCodeData)
+    public ActionResult<QrCodeScanResponse> ProcessQrCodeScan([FromQuery] string qrCodeData)
     {
         var user = (UserDto?)HttpContext.Items["User"];
-        var status = baggageTrackingService.ProcessQrCodeScan(user!, qrCodeData);
-        switch (status)
+        var response = baggageTrackingService.ProcessQrCodeScan(user!, qrCodeData);
+        switch (response.ScanResult)
         {
             case QrCodeScanResult.Success:
             case QrCodeScanResult.NotOwnedByPassenger:
-                return Ok(new PlainResponse(status.ToString()));
+                return Ok(response);
             case QrCodeScanResult.CodeInvalid:
             case QrCodeScanResult.UnknownError:
             default:
-                return BadRequest(new PlainResponse(status.ToString()));
+                return BadRequest(response);
         }
     }
 }
