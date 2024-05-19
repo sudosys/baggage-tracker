@@ -72,8 +72,8 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
         switch (status)
         {
             case QrCodeScanResult.Success:
-                return Ok(new PlainResponse(status.ToString()));
             case QrCodeScanResult.NotOwnedByPassenger:
+                return Ok(new PlainResponse(status.ToString()));
             case QrCodeScanResult.CodeInvalid:
             case QrCodeScanResult.UnknownError:
             default:
