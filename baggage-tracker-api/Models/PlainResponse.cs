@@ -1,6 +1,6 @@
 namespace BaggageTrackerApi.Models;
 
-public struct PlainResponse(string message)
+public struct PlainResponse(object response)
 {
-    public string Message { get; set; } = message;
+    public object Response { get; set; } = response;
 }
