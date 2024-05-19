@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { BaggageTrackingService } from '../../services/baggage-tracking-service/baggage-tracking.service';
 import { UserService } from '../../services/user-service/user.service';
+
 @Component({
 	selector: 'app-qr-code-scan',
 	templateUrl: './qr-code-scan.component.html',
@@ -13,6 +14,8 @@ export class QrCodeScanComponent {
 	scanSuccessful = false;
 	scanComplete = false;
 	noCameraAvailable = false;
+
+	protected readonly UserService = UserService;
 
 	protected onCameraFound() {
 		this.scanEnabled = true;
@@ -34,6 +37,4 @@ export class QrCodeScanComponent {
 	protected onScanFailed() {
 		this.scanSuccessful = true;
 	}
-
-	protected readonly UserService = UserService;
 }

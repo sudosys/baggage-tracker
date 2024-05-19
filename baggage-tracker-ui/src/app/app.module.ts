@@ -8,7 +8,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { API_BASE_URL } from '../../open-api/bt-api.client';
 import { environment } from '../environments/environment.development';
-import { HttpClientModule } from '@angular/common/http';
+import {
+	HttpClientModule,
+	provideHttpClient,
+	withInterceptors
+} from '@angular/common/http';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -16,6 +20,7 @@ import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QrCodeScanComponent } from './components/qr-code-scan/qr-code-scan.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { httpInterceptor } from './services/http-interceptor/http.interceptor';
 
 @NgModule({
 	declarations: [AppComponent, LoginComponent, HeaderComponent, QrCodeScanComponent],
@@ -34,6 +39,7 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
 	],
 	providers: [
 		{ provide: API_BASE_URL, useValue: environment.apiBaseUrl },
+		provideHttpClient(withInterceptors([httpInterceptor])),
 		MessageService
 	],
 	bootstrap: [AppComponent]
