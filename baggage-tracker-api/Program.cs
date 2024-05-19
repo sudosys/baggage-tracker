@@ -108,6 +108,7 @@ public class Program
                 option.AddPolicy(name: policyName, policyBuilder => policyBuilder
                         .WithOrigins(allowedOrigins!)
                         .AllowAnyHeader()
+                        .WithExposedHeaders("Content-Disposition")
                         .AllowAnyMethod()));
 
     }
