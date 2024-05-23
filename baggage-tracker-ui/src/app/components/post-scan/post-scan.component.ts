@@ -43,11 +43,11 @@ export class PostScanComponent implements OnInit {
 		if (UserService.userInfo?.role == UserRole.Passenger) {
 			this.btClient
 				.passengerAllowedStatuses()
-				.subscribe((r) => this.mapStatusesToOptions(r.response));
+				.subscribe((r) => this.initStatusOptions(r.response));
 		} else if (UserService.userInfo?.role == UserRole.Personnel) {
 			this.btClient
 				.personnelAllowedStatuses()
-				.subscribe((r) => this.mapStatusesToOptions(r.response));
+				.subscribe((r) => this.initStatusOptions(r.response));
 		}
 	}
 
@@ -58,6 +58,34 @@ export class PostScanComponent implements OnInit {
 				value: o
 			};
 		});
+	}
+
+	private initStatusOptions(statuses: BaggageStatus[]) {
+		this.mapStatusesToOptions(statuses);
+		this.selectStatus();
+	}
+
+	private selectStatus() {
+		const baggageStatus = this.btService.qrCodeScanResult()?.baggage?.baggageStatus;
+
+		if (this.statusOptions.length == 1) {
+			this.selectedStatus = this.statusOptions[0].value as BaggageStatus;
+		}
+
+		const currentStatusIndex = this.statusOptions.findIndex(
+			(o) => o.value == baggageStatus
+		);
+
+		if (
+			currentStatusIndex != -1 &&
+			currentStatusIndex < this.statusOptions.length - 1
+		) {
+			this.selectedStatus = this.statusOptions[currentStatusIndex + 1]
+				.value as BaggageStatus;
+		} else if (currentStatusIndex == this.statusOptions.length - 1) {
+			this.selectedStatus = this.statusOptions[currentStatusIndex]
+				.value as BaggageStatus;
+		}
 	}
 
 	protected toTitleCase = (input: string) => input.toTitleCase();
