@@ -9,7 +9,12 @@
 			(onClick)="onQrCodeScanClick()"
 		/>
 		@if (UserService.userInfo?.role == UserRole.Passenger) {
-			<p-button class="mt-3" icon="bi bi-briefcase" label="Track Baggages" />
+			<p-button
+				class="mt-3"
+				icon="bi bi-briefcase"
+				label="Track Baggages"
+				(onClick)="onTrackBaggagesClick()"
+			/>
 			<p-button class="mt-3" icon="bi bi-info-circle-fill" label="Help" />
 		} @else if (UserService.userInfo?.role == UserRole.Personnel) {
 			<p-button
@@ -22,7 +27,7 @@
 				class="mt-3"
 				icon="bi bi-briefcase"
 				label="Track Baggages of a Flight"
-				(onClick)="onTrackBaggagesClick()"
+				(onClick)="onTrackBaggagesByFlightClick()"
 			/>
 		}
 	</div>

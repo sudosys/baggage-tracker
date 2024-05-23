@@ -155,7 +155,7 @@ export class BaggageTrackerClient {
      * @param userId (optional) 
      * @return Success
      */
-    baggageStatusAll(userId: number | undefined): Observable<BaggageDto[]> {
+    baggageStatusGET(userId: number | undefined): Observable<BaggageInfoResponse> {
         let url_ = this.baseUrl + "/api/BaggageTracking/baggage-status?";
         if (userId === null)
             throw new Error("The parameter 'userId' cannot be null.");
@@ -172,20 +172,20 @@ export class BaggageTrackerClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processBaggageStatusAll(response_);
+            return this.processBaggageStatusGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processBaggageStatusAll(response_ as any);
+                    return this.processBaggageStatusGET(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BaggageDto[]>;
+                    return _observableThrow(e) as any as Observable<BaggageInfoResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BaggageDto[]>;
+                return _observableThrow(response_) as any as Observable<BaggageInfoResponse>;
         }));
     }
 
-    protected processBaggageStatusAll(response: HttpResponseBase): Observable<BaggageDto[]> {
+    protected processBaggageStatusGET(response: HttpResponseBase): Observable<BaggageInfoResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -196,14 +196,7 @@ export class BaggageTrackerClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(BaggageDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = BaggageInfoResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -219,7 +212,7 @@ export class BaggageTrackerClient {
      * @param newStatus (optional) 
      * @return Success
      */
-    baggageStatus(baggageId: string | undefined, newStatus: BaggageStatus | undefined): Observable<void> {
+    baggageStatusPOST(baggageId: string | undefined, newStatus: BaggageStatus | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/BaggageTracking/baggage-status?";
         if (baggageId === null)
             throw new Error("The parameter 'baggageId' cannot be null.");
@@ -239,11 +232,11 @@ export class BaggageTrackerClient {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processBaggageStatus(response_);
+            return this.processBaggageStatusPOST(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processBaggageStatus(response_ as any);
+                    return this.processBaggageStatusPOST(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -252,7 +245,7 @@ export class BaggageTrackerClient {
         }));
     }
 
-    protected processBaggageStatus(response: HttpResponseBase): Observable<void> {
+    protected processBaggageStatusPOST(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -887,6 +880,54 @@ export interface IBaggageDto {
     baggageId?: string;
     baggageName?: string | undefined;
     baggageStatus?: BaggageStatus;
+}
+
+export class BaggageInfoResponse implements IBaggageInfoResponse {
+    flightNumber?: string | undefined;
+    baggages?: BaggageDto[] | undefined;
+
+    constructor(data?: IBaggageInfoResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.flightNumber = _data["flightNumber"];
+            if (Array.isArray(_data["baggages"])) {
+                this.baggages = [] as any;
+                for (let item of _data["baggages"])
+                    this.baggages!.push(BaggageDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): BaggageInfoResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new BaggageInfoResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["flightNumber"] = this.flightNumber;
+        if (Array.isArray(this.baggages)) {
+            data["baggages"] = [];
+            for (let item of this.baggages)
+                data["baggages"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IBaggageInfoResponse {
+    flightNumber?: string | undefined;
+    baggages?: BaggageDto[] | undefined;
 }
 
 export enum BaggageStatus {

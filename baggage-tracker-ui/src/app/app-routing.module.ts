@@ -7,6 +7,7 @@ import { QrCodeScanComponent } from './components/qr-code-scan/qr-code-scan.comp
 import { PostScanComponent } from './components/post-scan/post-scan.component';
 import { GenerateQrCodeComponent } from './components/generate-qr-code/generate-qr-code.component';
 import { TrackBaggagesByFlightComponent } from './components/track-baggages-by-flight/track-baggages-by-flight.component';
+import { TrackBaggagesComponent } from './components/track-baggages/track-baggages.component';
 
 const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -17,6 +18,11 @@ const routes: Routes = [
 	{
 		path: 'generate-qr-code',
 		component: GenerateQrCodeComponent,
+		canActivate: [routeGuard]
+	},
+	{
+		path: 'track-baggages',
+		component: TrackBaggagesComponent,
 		canActivate: [routeGuard]
 	},
 	{

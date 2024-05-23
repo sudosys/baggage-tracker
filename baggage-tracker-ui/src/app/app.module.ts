@@ -29,6 +29,7 @@ import { GenerateQrCodeComponent } from './components/generate-qr-code/generate-
 import { TrackBaggagesByFlightComponent } from './components/track-baggages-by-flight/track-baggages-by-flight.component';
 import { AccordionModule } from 'primeng/accordion';
 import { TableModule } from 'primeng/table';
+import { TrackBaggagesComponent } from './components/track-baggages/track-baggages.component';
 
 @NgModule({
 	declarations: [
@@ -38,7 +39,8 @@ import { TableModule } from 'primeng/table';
 		QrCodeScanComponent,
 		PostScanComponent,
 		GenerateQrCodeComponent,
-		TrackBaggagesByFlightComponent
+		TrackBaggagesByFlightComponent,
+		TrackBaggagesComponent
 	],
 	imports: [
 		BrowserModule,

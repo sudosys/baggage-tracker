@@ -138,26 +138,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BaggageDto"
-                  }
+                  "$ref": "#/components/schemas/BaggageInfoResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BaggageDto"
-                  }
+                  "$ref": "#/components/schemas/BaggageInfoResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BaggageDto"
-                  }
+                  "$ref": "#/components/schemas/BaggageInfoResponse"
                 }
               }
             }
@@ -554,6 +545,23 @@
           },
           "baggageStatus": {
             "$ref": "#/components/schemas/BaggageStatus"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BaggageInfoResponse": {
+        "type": "object",
+        "properties": {
+          "flightNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "baggages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BaggageDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -33,7 +33,7 @@ export class BaggageTrackingService {
 
 	setBaggageStatus(status: BaggageStatus) {
 		return this.btClient
-			.baggageStatus(this.qrCodeScanResult()?.baggage?.baggageId, status)
+			.baggageStatusPOST(this.qrCodeScanResult()?.baggage?.baggageId, status)
 			.pipe(
 				catchError((error: Error) => {
 					this.messageService.add({
@@ -64,6 +64,10 @@ export class BaggageTrackingService {
 				this.fileDownload.set(file);
 			})
 		);
+	}
+
+	trackBaggages(userId: number | undefined) {
+		return this.btClient.baggageStatusGET(userId);
 	}
 
 	trackBaggagesByFlight(flightNumber: string) {
