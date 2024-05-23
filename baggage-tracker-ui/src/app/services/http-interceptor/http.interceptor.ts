@@ -3,6 +3,7 @@ import { UserService } from '../user-service/user.service';
 import { inject } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { catchError, throwError } from 'rxjs';
+import { PlainResponse } from '../../../../open-api/bt-api.client';
 
 export const httpInterceptor: HttpInterceptorFn = (req, next) => {
 	const messageService = inject(MessageService);
@@ -14,14 +15,22 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
 		: req;
 
 	return next(reqWithToken).pipe(
-		catchError((error: HttpErrorResponse) => {
-			messageService.add({
-				severity: 'error',
-				summary: `Error Response: ${error.status}`,
-				detail: error.message
+		catchError((response: HttpErrorResponse) => {
+			const error = response.error as Blob;
+			blobToPlainResponse(error).then((plainResponse) => {
+				messageService.add({
+					severity: 'error',
+					summary: `Error Response: ${response.status}`,
+					detail: plainResponse.response
+				});
 			});
 
 			return throwError(() => error);
 		})
 	);
 };
+
+async function blobToPlainResponse(blob: Blob): Promise<PlainResponse> {
+	const jsonStr = await blob.text();
+	return JSON.parse(jsonStr) as PlainResponse;
+}
