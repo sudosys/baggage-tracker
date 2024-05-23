@@ -24,25 +24,6 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMappe
             .Select(mapper.Map<UserDto>)
             .FirstOrDefault(u => u.Id == userId);
 
-    public IEnumerable<UserDto> GetUsersByFlightNumber(string flightNumber)
-    {
-        if (!baggageTrackerDbContext.DoesFlightExist(flightNumber))
-        {
-            throw new Exception($"Flight {flightNumber} does not exist.");
-        }
-
-        var usersByFlightNumber = baggageTrackerDbContext.Users
-            .QueryUserWithFlightData()
-            .Where(u => u.ActiveFlight != null &&
-                        u.ActiveFlight.FlightNumber == flightNumber &&
-                        u.Role == UserRole.Passenger)
-            .AsEnumerable()
-            .Select(mapper.Map<UserDto>)
-            .ToList();
-
-        return usersByFlightNumber;
-    }
-    
     public UserSlimDto? CheckUserCredentials(string username, string hashedPassword) =>
         baggageTrackerDbContext.Users
             .Where(u => u.Username == username

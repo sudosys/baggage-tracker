@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using BaggageTrackerApi.Enums;
 
 namespace BaggageTrackerApi.Entities.DTOs;
@@ -14,6 +13,5 @@ public class UserSlimDto
     [StringLength(150)]
     public required string FullName { get; init; }
 
-    
     public required UserRole Role { get; init; }
 }

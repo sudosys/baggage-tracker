@@ -1,4 +1,5 @@
 using BaggageTrackerApi.Attributes;
+using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Models;
@@ -80,6 +81,20 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
             case QrCodeScanResult.UnknownError:
             default:
                 return BadRequest(response);
+        }
+    }
+    
+    [HttpGet("{flightNumber}")]
+    public ActionResult<List<User>> GetUsersByFlightNumber([FromRoute] string flightNumber)
+    {
+        try
+        {
+            var usersByFlightNumber = baggageTrackingService.GetPassengersByFlightNumber(flightNumber);
+            return Ok(usersByFlightNumber);
+        }
+        catch (Exception e)
+        {
+            return NotFound(new PlainResponse(e.Message));
         }
     }
     

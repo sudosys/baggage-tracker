@@ -14,7 +14,6 @@ public class UserDto
     [StringLength(150)]
     public required string FullName { get; init; }
 
-    
     public required UserRole Role { get; init; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

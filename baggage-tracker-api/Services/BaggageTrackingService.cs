@@ -2,7 +2,9 @@ using AutoMapper;
 using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BaggageTrackerApi.Services;
 
@@ -22,7 +24,7 @@ public class BaggageTrackingService(
     
     public MemoryStream GenerateQrCodesForFlight(string flightNumber)
     {
-        var users = userService.GetUsersByFlightNumber(flightNumber);
+        var users = GetPassengersByFlightNumber(flightNumber);
         
         var qrCodes = qrCodeGenerationService.CreateQrCodes(users);
         var compressed = QrCodeGenerationService.CompressQrCodes(qrCodes);
@@ -31,6 +33,26 @@ public class BaggageTrackingService(
 
         return compressed;
     }
+    
+    public IEnumerable<UserDto> GetPassengersByFlightNumber(string flightNumber)
+    {
+        if (!baggageTrackerDbContext.DoesFlightExist(flightNumber))
+        {
+            throw new Exception($"Flight {flightNumber} does not exist.");
+        }
+
+        var usersByFlightNumber = baggageTrackerDbContext.Users
+            .Include(u => u.Baggages)
+            .Where(u => u.ActiveFlight != null &&
+                        u.ActiveFlight.FlightNumber == flightNumber &&
+                        u.Role == UserRole.Passenger)
+            .AsEnumerable()
+            .Select(mapper.Map<UserDto>)
+            .ToList();
+
+        return usersByFlightNumber;
+    }
+
 
     public List<BaggageDto> GetBaggageStatus(long userId)
     {

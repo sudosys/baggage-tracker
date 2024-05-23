@@ -51,18 +51,4 @@ public class UserController(UserService userService) : ControllerBase
 
         return user == null ? NotFound() : Ok(user);
     }
-    
-    [HttpGet("{flightNumber}")]
-    public ActionResult<List<User>> GetUsersByFlightNumber([FromRoute] string flightNumber)
-    {
-        try
-        {
-            var usersByFlightNumber = userService.GetUsersByFlightNumber(flightNumber);
-            return Ok(usersByFlightNumber);
-        }
-        catch (Exception e)
-        {
-            return NotFound(new PlainResponse(e.Message));
-        }
-    }
 }

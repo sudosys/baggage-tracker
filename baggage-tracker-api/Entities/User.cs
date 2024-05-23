@@ -8,7 +8,7 @@ namespace BaggageTrackerApi.Entities;
 
 [Table("bt_users")]
 [method: SetsRequiredMembers]
-public sealed class User(UserRole role, string username, string fullName, string password)
+public class User(UserRole role, string username, string fullName, string password)
 {
     [SetsRequiredMembers]
     public User(long id, UserRole role, string username, string fullName, string password) 
@@ -34,13 +34,12 @@ public sealed class User(UserRole role, string username, string fullName, string
     [StringLength(256)]
     [JsonIgnore]
     public string Password { get; init; } = password;
-
     
     public required UserRole Role { get; init; } = role;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Flight? ActiveFlight { get; init; }
+    public virtual Flight? ActiveFlight { get; init; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public ICollection<Baggage>? Baggages { get; init; }
+    public virtual ICollection<Baggage>? Baggages { get; init; }
 }
