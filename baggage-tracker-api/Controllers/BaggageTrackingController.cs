@@ -37,7 +37,7 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
 
     [HttpGet("baggage-status")]
     [Authorize]
-    public ActionResult<List<BaggageDto>> GetBaggageStatus([FromQuery] long userId)
+    public ActionResult<BaggageInfoResponse> GetBaggageStatus([FromQuery] long userId)
     {
         try
         {

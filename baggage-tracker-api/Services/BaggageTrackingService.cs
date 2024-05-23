@@ -53,8 +53,7 @@ public class BaggageTrackingService(
         return usersByFlightNumber;
     }
 
-
-    public List<BaggageDto> GetBaggageStatus(long userId)
+    public BaggageInfoResponse GetBaggageStatus(long userId)
     {
         var user = userService.GetUserById(userId);
 
@@ -68,11 +67,20 @@ public class BaggageTrackingService(
             throw new Exception($"{nameof(UserRole.Personnel)} can't query baggage status.");
         }
 
-        return baggageTrackerDbContext.Baggages
+        var flightNumber = user.ActiveFlight?.FlightNumber;
+
+        if (flightNumber == null)
+        {
+            throw new Exception("Active flight could not be found.");
+        }
+
+        var baggages = baggageTrackerDbContext.Baggages
             .Where(b => b.UserId == userId)
             .AsEnumerable()
             .Select(mapper.Map<BaggageDto>)
             .ToList();
+
+        return new BaggageInfoResponse(flightNumber, baggages);
     }
     
     public void SetBaggageStatus(UserDto user, Guid baggageId, BaggageStatus newStatus)
