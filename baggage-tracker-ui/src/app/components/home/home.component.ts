@@ -43,4 +43,8 @@ export class HomeComponent {
 	async onTrackBaggagesByFlightClick() {
 		await this.router.navigateByUrl('track-baggages-by-flight');
 	}
+
+	async onClickHelp() {
+		await this.router.navigateByUrl('help');
+	}
 }

@@ -8,6 +8,7 @@ import { PostScanComponent } from './components/post-scan/post-scan.component';
 import { GenerateQrCodeComponent } from './components/generate-qr-code/generate-qr-code.component';
 import { TrackBaggagesByFlightComponent } from './components/track-baggages-by-flight/track-baggages-by-flight.component';
 import { TrackBaggagesComponent } from './components/track-baggages/track-baggages.component';
+import { HelpComponent } from './components/help/help.component';
 
 const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -28,6 +29,11 @@ const routes: Routes = [
 	{
 		path: 'track-baggages-by-flight',
 		component: TrackBaggagesByFlightComponent,
+		canActivate: [routeGuard]
+	},
+	{
+		path: 'help',
+		component: HelpComponent,
 		canActivate: [routeGuard]
 	}
 ];

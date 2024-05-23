@@ -30,6 +30,7 @@ import { TrackBaggagesByFlightComponent } from './components/track-baggages-by-f
 import { AccordionModule } from 'primeng/accordion';
 import { TableModule } from 'primeng/table';
 import { TrackBaggagesComponent } from './components/track-baggages/track-baggages.component';
+import { HelpComponent } from './components/help/help.component';
 
 @NgModule({
 	declarations: [
@@ -40,7 +41,8 @@ import { TrackBaggagesComponent } from './components/track-baggages/track-baggag
 		PostScanComponent,
 		GenerateQrCodeComponent,
 		TrackBaggagesByFlightComponent,
-		TrackBaggagesComponent
+		TrackBaggagesComponent,
+		HelpComponent
 	],
 	imports: [
 		BrowserModule,

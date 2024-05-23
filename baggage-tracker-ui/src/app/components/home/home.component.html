@@ -15,7 +15,12 @@
 				label="Track Baggages"
 				(onClick)="onTrackBaggagesClick()"
 			/>
-			<p-button class="mt-3" icon="bi bi-info-circle-fill" label="Help" />
+			<p-button
+				class="mt-3"
+				icon="bi bi-info-circle-fill"
+				label="Help"
+				(onClick)="onClickHelp()"
+			/>
 		} @else if (UserService.userInfo?.role == UserRole.Personnel) {
 			<p-button
 				class="mt-3"

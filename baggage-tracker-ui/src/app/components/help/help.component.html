@@ -1,0 +1,11 @@
+<section class="min-h-0">
+	<h3>Help</h3>
+
+	@if (helpText) {
+		<p class="p-2 overflow-auto">
+			{{ helpText }}
+		</p>
+	} @else {
+		<p-progressSpinner></p-progressSpinner>
+	}
+</section>
