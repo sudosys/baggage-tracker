@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { BaggageTrackingService } from '../../services/baggage-tracking-service/baggage-tracking.service';
 import { User } from '../../../../open-api/bt-api.client';
 
@@ -15,6 +15,7 @@ export class TrackBaggagesByFlightComponent {
 
 	userBaggageInformation: User[];
 
+	@HostListener('document:keyup.enter', ['$event'])
 	onClickFetchFlightData() {
 		if (!this.flightNumber) return;
 		this.btService.trackBaggagesByFlight(this.flightNumber).subscribe((response) => {

@@ -13,6 +13,7 @@
 			<p-button
 				class="mt-2"
 				label="Fetch Flight Data"
+				[disabled]="!flightNumber"
 				(onClick)="onClickFetchFlightData()"
 			></p-button>
 		} @else {

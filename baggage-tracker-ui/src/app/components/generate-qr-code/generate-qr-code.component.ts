@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 import { BaggageTrackingService } from '../../services/baggage-tracking-service/baggage-tracking.service';
 
 @Component({
@@ -15,7 +15,8 @@ export class GenerateQrCodeComponent implements OnDestroy {
 		this.disposeFileDownload();
 	}
 
-	onGenerateClick() {
+	@HostListener('document:keyup.enter', ['$event'])
+	onClickGenerate() {
 		if (!this.flightNumber) return;
 		this.btService
 			.getBaggageQrCodes(this.flightNumber)
