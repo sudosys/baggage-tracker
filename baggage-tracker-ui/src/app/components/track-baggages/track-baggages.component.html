@@ -1,23 +1,27 @@
 <section class="min-h-0">
 	<div class="d-flex flex-column align-items-center">
 		<h3>Track Baggages</h3>
-		<h4 class="m-0 mt-3">{{ baggageInfo.flightNumber }}</h4>
+		<h4 class="m-0 mt-3">{{ baggageInfo?.flightNumber ?? 'Loading...' }}</h4>
 	</div>
 
-	<p-table class="p-2 overflow-auto" [value]="baggageInfo.baggages ?? []">
-		<ng-template pTemplate="header">
-			<tr>
-				<td class="fw-bolder">Baggage Name</td>
-				<td class="fw-bolder">Status</td>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="body" let-baggage>
-			<tr>
-				<td>{{ baggage.baggageName }}</td>
-				<td>
-					{{ toTitleCase(baggage.baggageStatus?.toString() ?? '') }}
-				</td>
-			</tr>
-		</ng-template>
-	</p-table>
+	@if (baggageInfo) {
+		<p-table class="p-2 overflow-auto" [value]="baggageInfo.baggages ?? []">
+			<ng-template pTemplate="header">
+				<tr>
+					<td class="fw-bolder">Baggage Name</td>
+					<td class="fw-bolder">Status</td>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-baggage>
+				<tr>
+					<td>{{ baggage.baggageName }}</td>
+					<td>
+						{{ toTitleCase(baggage.baggageStatus?.toString() ?? '') }}
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	} @else {
+		<p-progressSpinner></p-progressSpinner>
+	}
 </section>

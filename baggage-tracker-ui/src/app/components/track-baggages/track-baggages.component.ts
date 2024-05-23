@@ -11,7 +11,7 @@ import { UserService } from '../../services/user-service/user.service';
 export class TrackBaggagesComponent implements OnInit {
 	constructor(private btService: BaggageTrackingService) {}
 
-	baggageInfo: BaggageInfoResponse;
+	baggageInfo: BaggageInfoResponse | undefined;
 
 	ngOnInit(): void {
 		this.btService.trackBaggages(UserService.userInfo?.id).subscribe((response) => {
