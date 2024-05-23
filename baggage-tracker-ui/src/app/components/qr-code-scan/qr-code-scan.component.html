@@ -13,7 +13,7 @@
 		@if (!scanEnabled) {
 			<p-progressSpinner></p-progressSpinner>
 		}
-		<h6>
+		<h4 class="m-0 mt-1">
 			@if (scanSuccessful && scanComplete) {
 				QR code scan successful!<i class="ms-2 bi bi-check-lg"></i>
 			} @else if (!scanSuccessful && scanComplete) {
@@ -21,6 +21,6 @@
 			} @else if (scanEnabled) {
 				Looking for QR Code...
 			}
-		</h6>
+		</h4>
 	</div>
 </section>
