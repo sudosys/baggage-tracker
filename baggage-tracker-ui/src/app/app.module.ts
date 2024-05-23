@@ -28,6 +28,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { GenerateQrCodeComponent } from './components/generate-qr-code/generate-qr-code.component';
 import { TrackBaggagesByFlightComponent } from './components/track-baggages-by-flight/track-baggages-by-flight.component';
 import { AccordionModule } from 'primeng/accordion';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
 	declarations: [
@@ -54,7 +55,8 @@ import { AccordionModule } from 'primeng/accordion';
 		ProgressSpinnerModule,
 		NgOptimizedImage,
 		DropdownModule,
-		AccordionModule
+		AccordionModule,
+		TableModule
 	],
 	providers: [
 		{ provide: API_BASE_URL, useValue: environment.apiBaseUrl },

@@ -1,7 +1,7 @@
 <section>
 	<h3>Track Baggages</h3>
 
-	<div class="d-flex flex-column align-items-center">
+	<div class="d-flex flex-column align-items-center min-h-0">
 		@if (!returnedInformation) {
 			<input
 				type="text"
@@ -12,41 +12,45 @@
 
 			<p-button
 				class="mt-2"
-				label="Get Information"
-				(onClick)="onClickGetInformation()"
+				label="Fetch Flight Data"
+				(onClick)="onClickFetchFlightData()"
 			></p-button>
 		} @else {
 			<h4>
 				For Flight: {{ userBaggageInformation[0].activeFlight?.flightNumber }}
 			</h4>
-			<p-accordion class="p-2 overflow-auto">
-				@for (
-					baggageInformation of userBaggageInformation;
-					track baggageInformation
-				) {
-					<p-accordionTab [header]="baggageInformation.fullName">
-						<table class="table">
-							<thead>
-								<tr>
-									<td class="fw-bolder">Baggage Name</td>
-									<td class="fw-bolder">Status</td>
-								</tr>
-							</thead>
-							<tbody>
-								@for (
-									baggage of baggageInformation.baggages;
-									track baggage
-								) {
+			<div class="passenger-container w-100 p-2 overflow-auto">
+				<p-accordion>
+					@for (
+						baggageInformation of userBaggageInformation;
+						track baggageInformation
+					) {
+						<p-accordionTab [header]="baggageInformation.fullName">
+							<p-table [value]="baggageInformation.baggages ?? []">
+								<ng-template pTemplate="header">
+									<tr>
+										<td class="fw-bolder">Baggage Name</td>
+										<td class="fw-bolder">Status</td>
+									</tr>
+								</ng-template>
+								<ng-template pTemplate="body" let-baggage>
 									<tr>
 										<td>{{ baggage.baggageName }}</td>
-										<td>{{ baggage.baggageStatus }}</td>
+										<td>
+											{{
+												toTitleCase(
+													baggage.baggageStatus?.toString() ??
+														''
+												)
+											}}
+										</td>
 									</tr>
-								}
-							</tbody>
-						</table>
-					</p-accordionTab>
-				}
-			</p-accordion>
+								</ng-template>
+							</p-table>
+						</p-accordionTab>
+					}
+				</p-accordion>
+			</div>
 		}
 	</div>
 </section>

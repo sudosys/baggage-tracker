@@ -15,11 +15,13 @@ export class TrackBaggagesByFlightComponent {
 
 	userBaggageInformation: User[];
 
-	onClickGetInformation() {
+	onClickFetchFlightData() {
 		if (!this.flightNumber) return;
 		this.btService.trackBaggagesByFlight(this.flightNumber).subscribe((response) => {
 			this.userBaggageInformation = response;
 			this.returnedInformation = true;
 		});
 	}
+
+	protected toTitleCase = (input: string) => input.toTitleCase();
 }
