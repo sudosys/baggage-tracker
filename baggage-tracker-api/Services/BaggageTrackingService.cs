@@ -4,7 +4,6 @@ using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BaggageTrackerApi.Services;
 
@@ -42,7 +41,7 @@ public class BaggageTrackingService(
         }
 
         var usersByFlightNumber = baggageTrackerDbContext.Users
-            .Include(u => u.Baggages)
+            .QueryUserWithFlightData()
             .Where(u => u.ActiveFlight != null &&
                         u.ActiveFlight.FlightNumber == flightNumber &&
                         u.Role == UserRole.Passenger)

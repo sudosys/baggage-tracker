@@ -1,4 +1,5 @@
 using BaggageTrackerApi.Entities;
+using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Models.Registration;
 using BaggageTrackerApi.Services;
@@ -11,12 +12,28 @@ namespace BaggageTrackerApi.Controllers;
 [Attributes.Authorize(personnelOnly: true)]
 public class UserController(UserService userService) : ControllerBase
 {
-    [HttpPost("register")]
-    public IActionResult RegisterUser([FromBody] UserRegistration userRegistration)
+    [HttpPost("register-manifest")]
+    public ActionResult<ManifestRegistrationResponse> RegisterManifest([FromBody] FlightManifest flightManifest)
     {
-        userService.RegisterUser(userRegistration);
+        var credentials = userService.RegisterFlightManifest(flightManifest);
+        var status = ValidateManifestRegistration(flightManifest, credentials);
 
-        return NoContent();
+        return Ok(new ManifestRegistrationResponse(status, credentials));
+    }
+
+    private ManifestRegistrationStatus ValidateManifestRegistration(
+        FlightManifest manifest,
+        List<PassengerCredential> credentials)
+    {
+        if (credentials.Count == manifest.Passengers.Count())
+        {
+            return ManifestRegistrationStatus.Completed;
+        } else if (credentials.Count != manifest.Passengers.Count())
+        {
+            return ManifestRegistrationStatus.PartiallyCompleted;
+        }
+        
+        return ManifestRegistrationStatus.Failed;
     }
 
     [HttpDelete]

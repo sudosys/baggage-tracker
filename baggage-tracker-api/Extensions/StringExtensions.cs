@@ -24,6 +24,15 @@ public static class StringExtensions
             
         return hashString.ToString();
     }
+    
+    public static string GetRandomNumberString()
+    {
+        const int minValue = 100;
 
+        var randomEngine = new Random();
+
+        return randomEngine.Next(minValue, int.MaxValue).ToString();
+    }
+    
     public static Guid ParseAsGuid(this string input) => Guid.Parse(input);
 }

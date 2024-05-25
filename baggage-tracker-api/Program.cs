@@ -132,5 +132,6 @@ public class Program
         services.AddScoped<QRCodeGenerator>();
         services.AddScoped<UbcProcessor>();
         services.AddScoped<HelpService>();
+        services.AddSingleton<PasswordGenerator>();
     }
 }

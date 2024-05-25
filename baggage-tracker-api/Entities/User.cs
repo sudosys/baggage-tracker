@@ -11,12 +11,12 @@ namespace BaggageTrackerApi.Entities;
 public class User(UserRole role, string username, string fullName, string password)
 {
     [SetsRequiredMembers]
-    public User(long id, UserRole role, string username, string fullName, string password) 
+    public User(long id, UserRole role, string fullName, string username, string password) 
         : this(role, username, fullName, password)
     {
         Id = id;
-        Username = username;
         FullName = fullName;
+        Username = username;
         Password = password;
         Role = role;
     }
@@ -25,11 +25,11 @@ public class User(UserRole role, string username, string fullName, string passwo
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public required long Id { get; init; }
 
-    [StringLength(50)]
-    public required string Username { get; init; } = username;
-
     [StringLength(150)]
     public required string FullName { get; init; } = fullName;
+    
+    [StringLength(50)]
+    public required string Username { get; init; } = username;
 
     [StringLength(256)]
     [JsonIgnore]

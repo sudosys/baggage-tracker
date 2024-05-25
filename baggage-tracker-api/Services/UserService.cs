@@ -7,7 +7,7 @@ using BaggageTrackerApi.Models.Registration;
 
 namespace BaggageTrackerApi.Services;
 
-public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMapper mapper)
+public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMapper mapper, PasswordGenerator passwordGenerator)
 {
     public IEnumerable<UserDto> GetUsers(bool passengersOnly) =>
         baggageTrackerDbContext.Users
@@ -32,20 +32,42 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMappe
             .Select(mapper.Map<UserSlimDto>)
             .SingleOrDefault();
 
-    public void RegisterUser(UserRegistration userReg)
+    public List<PassengerCredential> RegisterFlightManifest(FlightManifest manifest)
+    {
+        var passengerCredentials = new List<PassengerCredential>();
+        
+        foreach (var registrationInfo in manifest.Passengers)
+        {
+            var credential = CreateCredentialForPassenger(registrationInfo);
+            passengerCredentials.Add(credential);
+            RegisterPassenger(registrationInfo, credential, manifest.FlightNumber);
+        }
+
+        baggageTrackerDbContext.SaveChanges();
+
+        return passengerCredentials;
+    }
+
+    private PassengerCredential CreateCredentialForPassenger(PassengerRegistration passengerInfo) => 
+        new(GenerateUsername(passengerInfo.FullName), passwordGenerator.GeneratePassword());
+
+    private void RegisterPassenger(
+        PassengerRegistration registrationInfo,
+        PassengerCredential credential,
+        string flightNumber)
     {
         var user = new User(
             UserRole.Passenger,
-            userReg.Username,
-            userReg.FullName,
-            userReg.Password.Sha256Hash());
+            credential.Username,
+            registrationInfo.FullName,
+            credential.Password.Sha256Hash());
 
         baggageTrackerDbContext.Users.Add(user);
-        baggageTrackerDbContext.SaveChanges();
+        baggageTrackerDbContext.SaveChanges(); // to get the id early
 
-        var activeFlight = new Flight(userReg.FlightNumber, user.Id);
+        var activeFlight = new Flight(flightNumber, user.Id);
 
-        var baggages = userReg.Baggages
+        var baggages = registrationInfo.Baggages
             .Select(baggage => 
                 new Baggage(
                     Guid.NewGuid(),
@@ -56,8 +78,18 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMappe
 
         baggageTrackerDbContext.Flights.Add(activeFlight);
         baggageTrackerDbContext.Baggages.AddRange(baggages);
+    }
 
-        baggageTrackerDbContext.SaveChanges();
+    private static string GenerateUsername(string fullName)
+    {
+        var fragments = fullName
+            .Split(' ')
+            .Select(f => f.ToLower())
+            .ToList();
+
+        fragments.Add(StringExtensions.GetRandomNumberString());
+
+        return string.Join('.', fragments);
     }
 
     public void DeleteUser(long userId)
