@@ -4,21 +4,19 @@ import { inject } from '@angular/core';
 import { Page } from '../../enums/page.enum';
 import { UserRole, UserSlimDto } from '../../../../open-api/bt-api.client';
 
-export const routeGuard: CanActivateFn = async () => {
+export const routeGuard: CanActivateFn = async (route) => {
 	const token = window.localStorage.getItem(UserService.tokenKey);
 
 	const serializedUser = window.localStorage.getItem(UserService.userKey);
 	const user = JSON.parse(serializedUser ?? '') as UserSlimDto;
 
-	const router = inject(Router);
-
-	const path = truncateSlash(router.url);
+	const path = truncateSlash(route.url[0].path);
 	const isAllowed = user.role && isPageAllowed(user.role, path);
 	if (path == Page.Login || (token && isAllowed)) {
 		return true;
 	}
 
-	await router.navigateByUrl(Page.Login);
+	await inject(Router).navigateByUrl(Page.Login);
 	window.localStorage.clear();
 	return false;
 };
