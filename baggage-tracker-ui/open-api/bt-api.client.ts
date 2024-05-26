@@ -484,6 +484,66 @@ export class BaggageTrackerClient {
     }
 
     /**
+     * @param body (optional) 
+     * @return Success
+     */
+    registerManifest(body: FlightManifest[] | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Flight/register-manifest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegisterManifest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegisterManifest(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processRegisterManifest(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * @return Success
      */
     help(): Observable<PlainResponse> {
@@ -525,58 +585,6 @@ export class BaggageTrackerClient {
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = PlainResponse.fromJS(resultData200);
             return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    register(body: UserRegistration | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/User/register";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processRegister(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processRegister(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processRegister(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1030,6 +1038,102 @@ export interface IFlight {
     flightNumber?: string | undefined;
 }
 
+export class FlightManifest implements IFlightManifest {
+    flightNumber?: string | undefined;
+    passengers?: PassengerRegistration[] | undefined;
+
+    constructor(data?: IFlightManifest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.flightNumber = _data["flightNumber"];
+            if (Array.isArray(_data["passengers"])) {
+                this.passengers = [] as any;
+                for (let item of _data["passengers"])
+                    this.passengers!.push(PassengerRegistration.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): FlightManifest {
+        data = typeof data === 'object' ? data : {};
+        let result = new FlightManifest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["flightNumber"] = this.flightNumber;
+        if (Array.isArray(this.passengers)) {
+            data["passengers"] = [];
+            for (let item of this.passengers)
+                data["passengers"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IFlightManifest {
+    flightNumber?: string | undefined;
+    passengers?: PassengerRegistration[] | undefined;
+}
+
+export class PassengerRegistration implements IPassengerRegistration {
+    fullName?: string | undefined;
+    baggages?: string[] | undefined;
+
+    constructor(data?: IPassengerRegistration) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fullName = _data["fullName"];
+            if (Array.isArray(_data["baggages"])) {
+                this.baggages = [] as any;
+                for (let item of _data["baggages"])
+                    this.baggages!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): PassengerRegistration {
+        data = typeof data === 'object' ? data : {};
+        let result = new PassengerRegistration();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fullName"] = this.fullName;
+        if (Array.isArray(this.baggages)) {
+            data["baggages"] = [];
+            for (let item of this.baggages)
+                data["baggages"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IPassengerRegistration {
+    fullName?: string | undefined;
+    baggages?: string[] | undefined;
+}
+
 export class PlainResponse implements IPlainResponse {
     response?: any | undefined;
 
@@ -1179,8 +1283,8 @@ export enum QrCodeScanResult {
 
 export class User implements IUser {
     id?: number;
-    username?: string | undefined;
     fullName?: string | undefined;
+    username?: string | undefined;
     role?: UserRole;
     activeFlight?: Flight;
     baggages?: Baggage[] | undefined;
@@ -1197,8 +1301,8 @@ export class User implements IUser {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.username = _data["username"];
             this.fullName = _data["fullName"];
+            this.username = _data["username"];
             this.role = _data["role"];
             this.activeFlight = _data["activeFlight"] ? Flight.fromJS(_data["activeFlight"]) : <any>undefined;
             if (Array.isArray(_data["baggages"])) {
@@ -1219,8 +1323,8 @@ export class User implements IUser {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["username"] = this.username;
         data["fullName"] = this.fullName;
+        data["username"] = this.username;
         data["role"] = this.role;
         data["activeFlight"] = this.activeFlight ? this.activeFlight.toJSON() : <any>undefined;
         if (Array.isArray(this.baggages)) {
@@ -1234,71 +1338,11 @@ export class User implements IUser {
 
 export interface IUser {
     id?: number;
-    username?: string | undefined;
     fullName?: string | undefined;
+    username?: string | undefined;
     role?: UserRole;
     activeFlight?: Flight;
     baggages?: Baggage[] | undefined;
-}
-
-export class UserRegistration implements IUserRegistration {
-    username?: string | undefined;
-    fullName?: string | undefined;
-    password?: string | undefined;
-    flightNumber?: string | undefined;
-    baggages?: string[] | undefined;
-
-    constructor(data?: IUserRegistration) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.username = _data["username"];
-            this.fullName = _data["fullName"];
-            this.password = _data["password"];
-            this.flightNumber = _data["flightNumber"];
-            if (Array.isArray(_data["baggages"])) {
-                this.baggages = [] as any;
-                for (let item of _data["baggages"])
-                    this.baggages!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): UserRegistration {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserRegistration();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["username"] = this.username;
-        data["fullName"] = this.fullName;
-        data["password"] = this.password;
-        data["flightNumber"] = this.flightNumber;
-        if (Array.isArray(this.baggages)) {
-            data["baggages"] = [];
-            for (let item of this.baggages)
-                data["baggages"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IUserRegistration {
-    username?: string | undefined;
-    fullName?: string | undefined;
-    password?: string | undefined;
-    flightNumber?: string | undefined;
-    baggages?: string[] | undefined;
 }
 
 export enum UserRole {

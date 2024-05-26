@@ -28,23 +28,27 @@ export class HomeComponent {
 	protected readonly UserService = UserService;
 	protected readonly UserRole = UserRole;
 
-	async onQrCodeScanClick() {
+	async onClickQrCodeScan() {
 		await this.router.navigateByUrl('qr-code-scan');
 	}
 
-	async onQrCodeGenerateClick() {
+	async onClickQrCodeGenerate() {
 		await this.router.navigateByUrl('generate-qr-code');
 	}
 
-	async onTrackBaggagesClick() {
+	async onClickTrackBaggages() {
 		await this.router.navigateByUrl('track-baggages');
 	}
 
-	async onTrackBaggagesByFlightClick() {
+	async onClickTrackBaggagesByFlight() {
 		await this.router.navigateByUrl('track-baggages-by-flight');
 	}
 
 	async onClickHelp() {
 		await this.router.navigateByUrl('help');
+	}
+
+	async onClickRegisterFlightManifest() {
+		await this.router.navigateByUrl('register-flight-manifest');
 	}
 }

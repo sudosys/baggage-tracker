@@ -31,6 +31,8 @@ import { AccordionModule } from 'primeng/accordion';
 import { TableModule } from 'primeng/table';
 import { TrackBaggagesComponent } from './components/track-baggages/track-baggages.component';
 import { HelpComponent } from './components/help/help.component';
+import { RegisterFlightManifestComponent } from './components/register-flight-manifest/register-flight-manifest.component';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
 	declarations: [
@@ -42,7 +44,8 @@ import { HelpComponent } from './components/help/help.component';
 		GenerateQrCodeComponent,
 		TrackBaggagesByFlightComponent,
 		TrackBaggagesComponent,
-		HelpComponent
+		HelpComponent,
+		RegisterFlightManifestComponent
 	],
 	imports: [
 		BrowserModule,
@@ -60,7 +63,8 @@ import { HelpComponent } from './components/help/help.component';
 		NgOptimizedImage,
 		DropdownModule,
 		AccordionModule,
-		TableModule
+		TableModule,
+		FileUploadModule
 	],
 	providers: [
 		{ provide: API_BASE_URL, useValue: environment.apiBaseUrl },

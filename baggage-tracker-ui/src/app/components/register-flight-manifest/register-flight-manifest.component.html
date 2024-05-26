@@ -1,0 +1,69 @@
+<section>
+	<h3>Register Flight Manifest</h3>
+
+	<div class="p-2 d-flex flex-column align-items-center">
+		@if (!processInProgress && !manifestFile) {
+			<ng-container *ngTemplateOutlet="uploadTemplate"></ng-container>
+		} @else if (!processInProgress && manifestFile) {
+			<ng-container *ngTemplateOutlet="manifestDownload"></ng-container>
+		} @else {
+			<p-progressSpinner></p-progressSpinner>
+		}
+	</div>
+</section>
+
+<ng-template #uploadTemplate>
+	<p-fileUpload
+		#fileUploader
+		[class.invisible]="uploadedManifests.length != 0"
+		mode="basic"
+		accept=".json"
+		chooseIcon="bi bi-upload"
+		chooseLabel="Upload Manifests"
+		[multiple]="true"
+		(onSelect)="onSelectManifest($event)"
+	></p-fileUpload>
+	<p-table
+		*ngIf="uploadedManifests.length > 0"
+		class="mt-3 overflow-auto"
+		[value]="uploadedManifests"
+	>
+		<ng-template pTemplate="header">
+			<tr>
+				<td class="fw-bolder">Manifest</td>
+				<td class="fw-bolder">Size (Bytes)</td>
+				<td></td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-manifest let-rowIndex="rowIndex">
+			<tr>
+				<td>{{ manifest.name }}</td>
+				<td>{{ manifest.size }}</td>
+				<td>
+					<span
+						class="remove-btn bi bi-x-square"
+						title="Remove Manifest"
+						(click)="onClickRemoveFile(rowIndex)"
+					></span>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+	@if (uploadedManifests.length != 0) {
+		<div class="btn-group mt-3">
+			<p-button
+				class="me-2"
+				label="Send manifests"
+				(onClick)="onClickSendManifests()"
+			></p-button>
+			<p-button label="Cancel" (onClick)="onClickCancel()"></p-button>
+		</div>
+	}
+</ng-template>
+
+<ng-template #manifestDownload>
+	<span>Download:</span>
+	<a class="mt-1" [download]="manifestFile?.name" [href]="manifestFile?.objectUrl">
+		{{ manifestFile?.name }}
+	</a>
+</ng-template>

@@ -331,6 +331,66 @@
         }
       }
     },
+    "/api/Flight/register-manifest": {
+      "post": {
+        "tags": [
+          "Flight"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FlightManifest"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FlightManifest"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FlightManifest"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Help": {
       "get": {
         "tags": [
@@ -356,37 +416,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/User/register": {
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserRegistration"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserRegistration"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserRegistration"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
           }
         }
       }
@@ -622,6 +651,42 @@
         },
         "additionalProperties": false
       },
+      "FlightManifest": {
+        "type": "object",
+        "properties": {
+          "flightNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "passengers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PassengerRegistration"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PassengerRegistration": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "maxLength": 150,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "baggages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "PlainResponse": {
         "type": "object",
         "properties": {
@@ -686,14 +751,14 @@
             "type": "integer",
             "format": "int64"
           },
-          "username": {
-            "maxLength": 50,
+          "fullName": {
+            "maxLength": 150,
             "minLength": 0,
             "type": "string",
             "nullable": true
           },
-          "fullName": {
-            "maxLength": 150,
+          "username": {
+            "maxLength": 50,
             "minLength": 0,
             "type": "string",
             "nullable": true
@@ -708,41 +773,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Baggage"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserRegistration": {
-        "type": "object",
-        "properties": {
-          "username": {
-            "maxLength": 50,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "fullName": {
-            "maxLength": 150,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "maxLength": 32,
-            "minLength": 8,
-            "type": "string",
-            "nullable": true
-          },
-          "flightNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "baggages": {
-            "type": "array",
-            "items": {
-              "type": "string"
             },
             "nullable": true
           }
