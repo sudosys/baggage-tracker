@@ -1,7 +1,6 @@
 using BaggageTrackerApi.Entities;
-using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Exceptions;
 using BaggageTrackerApi.Models;
-using BaggageTrackerApi.Models.Registration;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +18,11 @@ public class UserController(UserService userService) : ControllerBase
         {
             userService.DeleteUser(userId);
         }
-        catch (NullReferenceException exception)
+        catch (UserDoesNotExistException exception)
         {
             return NotFound(new PlainResponse(exception.Message));
         }
-        catch (InvalidOperationException exception)
+        catch (PersonnelCanNotBeDeletedException exception)
         {
             return BadRequest(new PlainResponse(exception.Message));
         }

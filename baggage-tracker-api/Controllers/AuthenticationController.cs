@@ -1,4 +1,5 @@
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Models.Authentication;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +17,8 @@ public class AuthenticationController(AuthenticationService authenticationServic
     {
         var authResponse = await authenticationService.AuthenticateUser(request);
 
-        return authResponse.Status == AuthenticationStatus.Success ? Ok(authResponse) : BadRequest(authResponse);
+        return authResponse.Status == AuthenticationStatus.Success ? 
+            Ok(authResponse) : 
+            BadRequest(new PlainResponse($"{authResponse.Status}: Invalid username or password."));
     }
 }

@@ -30,7 +30,7 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
 
             return fileStreamResult;
         }
-        catch (Exception e)
+        catch (FlightDoesNotExistException e)
         {
             return NotFound(new PlainResponse(e.Message));
         }
@@ -61,7 +61,7 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
             baggageTrackingService.SetBaggageStatus(user!, baggageId, newStatus);
             return NoContent();
         }
-        catch (Exception e)
+        catch (ApiDomainException e)
         {
             return BadRequest(new PlainResponse(e.Message));
         }
@@ -93,7 +93,7 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
             var usersByFlightNumber = baggageTrackingService.GetPassengersByFlightNumber(flightNumber);
             return Ok(usersByFlightNumber);
         }
-        catch (Exception e)
+        catch (FlightDoesNotExistException e)
         {
             return NotFound(new PlainResponse(e.Message));
         }
