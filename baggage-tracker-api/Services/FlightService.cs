@@ -2,6 +2,7 @@ using System.IO.Compression;
 using System.Text;
 using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Exceptions;
 using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Models.Registration;
@@ -14,6 +15,8 @@ public class FlightService(BaggageTrackerDbContext baggageTrackerDbContext, Pass
 {
     public async Task<MemoryStream> RegisterFlightManifests(List<FlightManifest> manifests, CancellationToken cancellationToken)
     {
+        await CheckFlightExistence(manifests, cancellationToken);
+        
         var credentialEntries = new List<(string fileName, List<PassengerCredential>)>();
         
         await baggageTrackerDbContext.Database.BeginTransactionAsync(cancellationToken);
@@ -40,6 +43,21 @@ public class FlightService(BaggageTrackerDbContext baggageTrackerDbContext, Pass
         await baggageTrackerDbContext.Database.CommitTransactionAsync(cancellationToken);
 
         return compressed;
+    }
+
+    private async Task CheckFlightExistence(List<FlightManifest> flightManifests, CancellationToken cancellationToken)
+    {
+        foreach (var flightManifest in flightManifests)
+        {
+            var flightExist = await baggageTrackerDbContext
+                .Flights
+                .AnyAsync(f => f.FlightNumber == flightManifest.FlightNumber, cancellationToken);
+
+            if (flightExist)
+            {
+                throw new FlightAlreadyExistsException($"{flightManifest.FlightNumber} is already registered.");
+            }
+        }
     }
 
     private static MemoryStream CompressFlightManifests(List<(string fileName, List<PassengerCredential>)> entries)

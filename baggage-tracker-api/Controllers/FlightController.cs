@@ -1,4 +1,5 @@
 using BaggageTrackerApi.Attributes;
+using BaggageTrackerApi.Exceptions;
 using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Models.Registration;
 using BaggageTrackerApi.Services;
@@ -13,15 +14,22 @@ public class FlightController(FlightService flightService) : ControllerBase
 {
     [HttpPost("register-manifest")]
     [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> RegisterManifest([FromBody] List<FlightManifest> flightManifest, CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<object>> RegisterManifest([FromBody] List<FlightManifest> flightManifest, CancellationToken cancellationToken)
     {
-        var compressed = await flightService.RegisterFlightManifests(flightManifest, cancellationToken);
-        var fileStreamResult = new FileStreamResult(compressed, "application/zip")
+        try
         {
-            FileDownloadName = "Manifests.zip"
-        };
-
-        return fileStreamResult;
+            var compressed = await flightService.RegisterFlightManifests(flightManifest, cancellationToken);
+            var fileStreamResult = new FileStreamResult(compressed, "application/zip")
+            {
+                FileDownloadName = "passenger-credentials.zip"
+            };
+            return fileStreamResult;
+        }
+        catch (FlightAlreadyExistsException e)
+        {
+            return BadRequest(new PlainResponse(e.Message));
+        }
     }
 
     [HttpGet("active-flight")]
