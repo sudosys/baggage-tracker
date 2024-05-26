@@ -9,6 +9,7 @@ import {
 import { catchError, of, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+import { Page } from '../../enums/page.enum';
 
 @Injectable({
 	providedIn: 'root'
@@ -43,7 +44,7 @@ export class UserService {
 			tap(async (response) => {
 				if (response.status == AuthenticationStatus.Success) {
 					this.attachUserToContext(response.token!, response.user!);
-					await this.router.navigateByUrl('/home');
+					await this.router.navigateByUrl(Page.Home);
 					UserService.userInfo = response.user!;
 				} else {
 					throw new Error(response.status);
@@ -56,7 +57,7 @@ export class UserService {
 		window.localStorage.removeItem(UserService.tokenKey);
 		window.localStorage.removeItem(UserService.userKey);
 		UserService.userInfo = undefined;
-		await this.router.navigateByUrl('login');
+		await this.router.navigateByUrl(Page.Login);
 	}
 
 	private attachUserToContext(token: string, user: UserSlimDto): void {

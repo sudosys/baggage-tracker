@@ -9,6 +9,7 @@ import {
 import { UserService } from '../../services/user-service/user.service';
 import { Router } from '@angular/router';
 import { DropdownOption } from '../../models/dropdown-option.model';
+import { Page } from '../../enums/page.enum';
 
 @Component({
 	selector: 'app-post-scan',
@@ -27,6 +28,7 @@ export class PostScanComponent implements OnInit {
 	protected readonly UserRole = UserRole;
 	protected readonly BaggageStatus = BaggageStatus;
 	protected readonly String = String;
+	protected readonly Page = Page;
 
 	protected selectedStatus = BaggageStatus.Undefined;
 	protected statusOptions: DropdownOption[] = [];

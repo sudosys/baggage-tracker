@@ -11,40 +11,53 @@ import { TrackBaggagesComponent } from './components/track-baggages/track-baggag
 import { HelpComponent } from './components/help/help.component';
 import { RegisterFlightManifestComponent } from './components/register-flight-manifest/register-flight-manifest.component';
 import { ActiveFlightsComponent } from './components/active-flights/active-flights.component';
+import { Page } from './enums/page.enum';
 
 const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
-	{ path: 'login', component: LoginComponent },
-	{ path: 'home', component: HomeComponent, canActivate: [routeGuard] },
-	{ path: 'qr-code-scan', component: QrCodeScanComponent, canActivate: [routeGuard] },
-	{ path: 'post-scan', component: PostScanComponent, canActivate: [routeGuard] },
+	{ path: Page.Login, component: LoginComponent },
 	{
-		path: 'generate-qr-code',
+		path: Page.Home,
+		component: HomeComponent,
+		canActivate: [routeGuard]
+	},
+	{
+		path: Page.QrCodeScan,
+		component: QrCodeScanComponent,
+		canActivate: [routeGuard]
+	},
+	{
+		path: Page.PostScan,
+		component: PostScanComponent,
+		canActivate: [routeGuard]
+	},
+	{
+		path: Page.GenerateQrCode,
 		component: GenerateQrCodeComponent,
 		canActivate: [routeGuard]
 	},
 	{
-		path: 'track-baggages',
+		path: Page.TrackBaggages,
 		component: TrackBaggagesComponent,
 		canActivate: [routeGuard]
 	},
 	{
-		path: 'track-baggages-by-flight',
+		path: Page.TrackBaggagesByFlight,
 		component: TrackBaggagesByFlightComponent,
 		canActivate: [routeGuard]
 	},
 	{
-		path: 'help',
+		path: Page.Help,
 		component: HelpComponent,
 		canActivate: [routeGuard]
 	},
 	{
-		path: 'register-flight-manifest',
+		path: Page.RegisterFlightManifest,
 		component: RegisterFlightManifestComponent,
 		canActivate: [routeGuard]
 	},
 	{
-		path: 'active-flights',
+		path: Page.ActiveFlights,
 		component: ActiveFlightsComponent,
 		canActivate: [routeGuard]
 	}

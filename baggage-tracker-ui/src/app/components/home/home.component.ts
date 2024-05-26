@@ -7,6 +7,7 @@ import { UserService } from '../../services/user-service/user.service';
 import { UserRole } from '../../../../open-api/bt-api.client';
 import { RippleModule } from 'primeng/ripple';
 import { Router } from '@angular/router';
+import { Page } from '../../enums/page.enum';
 
 @Component({
 	selector: 'app-home',
@@ -29,30 +30,30 @@ export class HomeComponent {
 	protected readonly UserRole = UserRole;
 
 	async onClickQrCodeScan() {
-		await this.router.navigateByUrl('qr-code-scan');
+		await this.router.navigateByUrl(Page.QrCodeScan);
 	}
 
 	async onClickQrCodeGenerate() {
-		await this.router.navigateByUrl('generate-qr-code');
+		await this.router.navigateByUrl(Page.GenerateQrCode);
 	}
 
 	async onClickTrackBaggages() {
-		await this.router.navigateByUrl('track-baggages');
+		await this.router.navigateByUrl(Page.TrackBaggages);
 	}
 
 	async onClickTrackBaggagesByFlight() {
-		await this.router.navigateByUrl('track-baggages-by-flight');
+		await this.router.navigateByUrl(Page.TrackBaggagesByFlight);
 	}
 
 	async onClickHelp() {
-		await this.router.navigateByUrl('help');
+		await this.router.navigateByUrl(Page.Help);
 	}
 
 	async onClickRegisterFlightManifest() {
-		await this.router.navigateByUrl('register-flight-manifest');
+		await this.router.navigateByUrl(Page.RegisterFlightManifest);
 	}
 
 	async onClickViewActiveFlights() {
-		await this.router.navigateByUrl('active-flights');
+		await this.router.navigateByUrl(Page.ActiveFlights);
 	}
 }

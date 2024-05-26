@@ -1,16 +1,54 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { UserService } from '../../services/user-service/user.service';
 import { inject } from '@angular/core';
+import { Page } from '../../enums/page.enum';
+import { UserRole, UserSlimDto } from '../../../../open-api/bt-api.client';
 
-export const routeGuard: CanActivateFn = () => {
+export const routeGuard: CanActivateFn = async () => {
 	const token = window.localStorage.getItem(UserService.tokenKey);
-	const user = window.localStorage.getItem(UserService.userKey);
+
+	const serializedUser = window.localStorage.getItem(UserService.userKey);
+	const user = JSON.parse(serializedUser ?? '') as UserSlimDto;
+
 	const router = inject(Router);
 
-	if (token && user) {
+	const path = truncateSlash(router.url);
+	const isAllowed = user.role && isPageAllowed(user.role, path);
+	if (path == Page.Login || (token && isAllowed)) {
 		return true;
 	}
 
-	router.navigateByUrl('login');
+	await router.navigateByUrl(Page.Login);
+	window.localStorage.clear();
 	return false;
 };
+
+const passengerAllowedPaths: Page[] = [
+	Page.Home,
+	Page.QrCodeScan,
+	Page.PostScan,
+	Page.TrackBaggages,
+	Page.Help
+];
+
+const personnelAllowedPaths: Page[] = [
+	Page.Home,
+	Page.QrCodeScan,
+	Page.PostScan,
+	Page.GenerateQrCode,
+	Page.TrackBaggagesByFlight,
+	Page.RegisterFlightManifest,
+	Page.ActiveFlights
+];
+
+function isPageAllowed(userRole: UserRole, path: string): boolean {
+	return (
+		(userRole == UserRole.Passenger &&
+			passengerAllowedPaths.includes(path as Page)) ||
+		(userRole == UserRole.Personnel && personnelAllowedPaths.includes(path as Page))
+	);
+}
+
+function truncateSlash(path: string) {
+	return path.replace(/\//, '');
+}

@@ -8,6 +8,7 @@ import { catchError, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { FileDownload } from '../../models/file-download.model';
+import { Page } from '../../enums/page.enum';
 
 @Injectable({
 	providedIn: 'root'
@@ -26,7 +27,7 @@ export class BaggageTrackingService {
 		return this.btClient.qrCodeScan(qrCodeData).pipe(
 			tap(async (result: QrCodeScanResponse) => {
 				this.qrCodeScanResult.set(result);
-				await this.router.navigateByUrl('post-scan');
+				await this.router.navigateByUrl(Page.PostScan);
 			})
 		);
 	}
@@ -49,7 +50,7 @@ export class BaggageTrackingService {
 						summary: 'Status updated',
 						detail: 'Status updated successfully.'
 					});
-					await this.router.navigateByUrl('home');
+					await this.router.navigateByUrl(Page.Home);
 				})
 			);
 	}
