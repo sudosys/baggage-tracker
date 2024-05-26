@@ -133,5 +133,6 @@ public class Program
         services.AddScoped<UbcProcessor>();
         services.AddScoped<HelpService>();
         services.AddSingleton<PasswordGenerator>();
+        services.AddScoped<FlightService>();
     }
 }
