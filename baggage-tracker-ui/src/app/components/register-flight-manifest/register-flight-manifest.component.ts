@@ -30,7 +30,10 @@ export class RegisterFlightManifestComponent implements OnDestroy {
 			this.uploadedManifests
 		);
 
-		registrationResponses$.subscribe(() => (this.inProgress = false));
+		registrationResponses$.subscribe({
+			error: () => this.onRegistrationFail(),
+			next: () => (this.inProgress = false)
+		});
 	}
 
 	onClickRemoveFile(index: number) {
@@ -40,6 +43,11 @@ export class RegisterFlightManifestComponent implements OnDestroy {
 
 	onClickCancel() {
 		this.fileUploader.clear();
+		this.uploadedManifests = [];
+	}
+
+	onRegistrationFail() {
+		this.inProgress = false;
 		this.uploadedManifests = [];
 	}
 
