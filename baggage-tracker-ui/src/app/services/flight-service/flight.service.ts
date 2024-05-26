@@ -28,9 +28,13 @@ export class FlightService {
 		);
 	}
 
-	async readManifestFile(file: File) {
+	private async readManifestFile(file: File) {
 		const fileContent = await file.text();
 
 		return JSON.parse(fileContent) as FlightManifest;
+	}
+
+	getActiveFlights() {
+		return this.btClient.activeFlight();
 	}
 }

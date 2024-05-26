@@ -1,0 +1,30 @@
+<section class="min-h-0">
+	<div class="d-flex flex-column align-items-center">
+		<h3>Active Flights</h3>
+	</div>
+
+	@if (!inProgress && activeFlights) {
+		<ng-container *ngTemplateOutlet="activeFlightsTableTemplate"></ng-container>
+	} @else {
+		<p-progressSpinner></p-progressSpinner>
+	}
+</section>
+
+<ng-template #activeFlightsTableTemplate>
+	<p-table class="p-2 overflow-auto" [value]="activeFlights">
+		<ng-template pTemplate="header">
+			<tr>
+				<td class="fw-bolder">Flight Number</td>
+				<td class="fw-bolder">Passenger Count</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-flight>
+			<tr>
+				<td>{{ flight.flightNumber }}</td>
+				<td>
+					{{ flight.passengerCount }}
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</ng-template>

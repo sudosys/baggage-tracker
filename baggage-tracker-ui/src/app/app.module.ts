@@ -33,6 +33,7 @@ import { TrackBaggagesComponent } from './components/track-baggages/track-baggag
 import { HelpComponent } from './components/help/help.component';
 import { RegisterFlightManifestComponent } from './components/register-flight-manifest/register-flight-manifest.component';
 import { FileUploadModule } from 'primeng/fileupload';
+import { ActiveFlightsComponent } from './components/active-flights/active-flights.component';
 
 @NgModule({
 	declarations: [
@@ -45,7 +46,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 		TrackBaggagesByFlightComponent,
 		TrackBaggagesComponent,
 		HelpComponent,
-		RegisterFlightManifestComponent
+		RegisterFlightManifestComponent,
+		ActiveFlightsComponent
 	],
 	imports: [
 		BrowserModule,

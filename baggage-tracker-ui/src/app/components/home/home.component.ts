@@ -51,4 +51,8 @@ export class HomeComponent {
 	async onClickRegisterFlightManifest() {
 		await this.router.navigateByUrl('register-flight-manifest');
 	}
+
+	async onClickViewActiveFlights() {
+		await this.router.navigateByUrl('active-flights');
+	}
 }

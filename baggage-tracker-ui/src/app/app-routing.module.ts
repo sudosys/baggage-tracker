@@ -10,6 +10,7 @@ import { TrackBaggagesByFlightComponent } from './components/track-baggages-by-f
 import { TrackBaggagesComponent } from './components/track-baggages/track-baggages.component';
 import { HelpComponent } from './components/help/help.component';
 import { RegisterFlightManifestComponent } from './components/register-flight-manifest/register-flight-manifest.component';
+import { ActiveFlightsComponent } from './components/active-flights/active-flights.component';
 
 const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -40,6 +41,11 @@ const routes: Routes = [
 	{
 		path: 'register-flight-manifest',
 		component: RegisterFlightManifestComponent,
+		canActivate: [routeGuard]
+	},
+	{
+		path: 'active-flights',
+		component: ActiveFlightsComponent,
 		canActivate: [routeGuard]
 	}
 ];

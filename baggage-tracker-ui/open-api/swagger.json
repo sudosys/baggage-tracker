@@ -391,6 +391,35 @@
         }
       }
     },
+    "/api/Flight/active-flight": {
+      "get": {
+        "tags": [
+          "Flight"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveFlightsResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveFlightsResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveFlightsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Help": {
       "get": {
         "tags": [
@@ -534,6 +563,33 @@
   },
   "components": {
     "schemas": {
+      "ActiveFlight": {
+        "type": "object",
+        "properties": {
+          "flightNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "passengerCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ActiveFlightsResponse": {
+        "type": "object",
+        "properties": {
+          "activeFlights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActiveFlight"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "AuthenticationRequest": {
         "type": "object",
         "properties": {

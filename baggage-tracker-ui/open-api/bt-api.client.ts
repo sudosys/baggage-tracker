@@ -546,6 +546,57 @@ export class BaggageTrackerClient {
     /**
      * @return Success
      */
+    activeFlight(): Observable<ActiveFlightsResponse> {
+        let url_ = this.baseUrl + "/api/Flight/active-flight";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processActiveFlight(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processActiveFlight(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ActiveFlightsResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ActiveFlightsResponse>;
+        }));
+    }
+
+    protected processActiveFlight(response: HttpResponseBase): Observable<ActiveFlightsResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ActiveFlightsResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     help(): Observable<PlainResponse> {
         let url_ = this.baseUrl + "/api/Help";
         url_ = url_.replace(/[?&]$/, "");
@@ -762,6 +813,90 @@ export class BaggageTrackerClient {
         }
         return _observableOf(null as any);
     }
+}
+
+export class ActiveFlight implements IActiveFlight {
+    flightNumber?: string | undefined;
+    passengerCount?: number;
+
+    constructor(data?: IActiveFlight) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.flightNumber = _data["flightNumber"];
+            this.passengerCount = _data["passengerCount"];
+        }
+    }
+
+    static fromJS(data: any): ActiveFlight {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActiveFlight();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["flightNumber"] = this.flightNumber;
+        data["passengerCount"] = this.passengerCount;
+        return data;
+    }
+}
+
+export interface IActiveFlight {
+    flightNumber?: string | undefined;
+    passengerCount?: number;
+}
+
+export class ActiveFlightsResponse implements IActiveFlightsResponse {
+    activeFlights?: ActiveFlight[] | undefined;
+
+    constructor(data?: IActiveFlightsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["activeFlights"])) {
+                this.activeFlights = [] as any;
+                for (let item of _data["activeFlights"])
+                    this.activeFlights!.push(ActiveFlight.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ActiveFlightsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActiveFlightsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.activeFlights)) {
+            data["activeFlights"] = [];
+            for (let item of this.activeFlights)
+                data["activeFlights"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IActiveFlightsResponse {
+    activeFlights?: ActiveFlight[] | undefined;
 }
 
 export class AuthenticationRequest implements IAuthenticationRequest {
