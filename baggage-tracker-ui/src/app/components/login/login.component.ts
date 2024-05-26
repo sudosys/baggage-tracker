@@ -36,7 +36,10 @@ export class LoginComponent implements OnInit {
 		this.inProgress = true;
 		this.userService
 			.login(this.loginForm.value.username!, this.loginForm.value.password!)
-			.subscribe(() => (this.inProgress = false));
+			.subscribe({
+				error: () => (this.inProgress = false),
+				next: () => (this.inProgress = false)
+			});
 	}
 
 	private triggerValidation(): void {

@@ -2,12 +2,16 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
 import { BaggageTrackerClient, FlightManifest } from '../../../../open-api/bt-api.client';
 import { FileDownload } from '../../models/file-download.model';
 import { tap } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class FlightService {
-	constructor(private btClient: BaggageTrackerClient) {}
+	constructor(
+		private btClient: BaggageTrackerClient,
+		private messageService: MessageService
+	) {}
 
 	fileDownload: WritableSignal<FileDownload | undefined> = signal(undefined);
 
@@ -24,6 +28,12 @@ export class FlightService {
 				};
 
 				this.fileDownload.set(fileDownload);
+
+				this.messageService.add({
+					severity: 'success',
+					summary: 'Download Ready',
+					detail: 'Passenger credentials are ready to download.'
+				});
 			})
 		);
 	}

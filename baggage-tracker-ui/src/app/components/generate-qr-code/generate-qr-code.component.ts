@@ -20,9 +20,10 @@ export class GenerateQrCodeComponent implements OnDestroy {
 	onClickGenerate() {
 		if (!this.flightNumber) return;
 		this.inProgress = true;
-		this.btService
-			.getBaggageQrCodes(this.flightNumber)
-			.subscribe(() => (this.inProgress = false));
+		this.btService.getBaggageQrCodes(this.flightNumber).subscribe({
+			error: () => (this.inProgress = false),
+			next: () => (this.inProgress = false)
+		});
 	}
 
 	private disposeFileDownload() {

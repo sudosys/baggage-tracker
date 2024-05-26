@@ -20,9 +20,12 @@ export class TrackBaggagesComponent implements OnInit {
 
 	private fetchBaggageInformation() {
 		this.inProgress = true;
-		this.btService.trackBaggages(UserService.userInfo?.id).subscribe((response) => {
-			this.baggageInfo = response;
-			this.inProgress = false;
+		this.btService.trackBaggages(UserService.userInfo?.id).subscribe({
+			error: () => (this.inProgress = false),
+			next: (response) => {
+				this.baggageInfo = response;
+				this.inProgress = false;
+			}
 		});
 	}
 

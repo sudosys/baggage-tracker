@@ -4,7 +4,7 @@ import {
 	BaggageTrackerClient,
 	QrCodeScanResponse
 } from '../../../../open-api/bt-api.client';
-import { catchError, of, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { FileDownload } from '../../models/file-download.model';
@@ -36,14 +36,6 @@ export class BaggageTrackingService {
 		return this.btClient
 			.baggageStatusPOST(this.qrCodeScanResult()?.baggage?.baggageId, status)
 			.pipe(
-				catchError((error: Error) => {
-					this.messageService.add({
-						severity: 'error',
-						summary: 'Error',
-						detail: error.message
-					});
-					return of();
-				}),
 				tap(async () => {
 					this.messageService.add({
 						severity: 'success',
@@ -63,6 +55,11 @@ export class BaggageTrackingService {
 					objectUrl: URL.createObjectURL(response.data)
 				};
 				this.fileDownload.set(file);
+				this.messageService.add({
+					severity: 'success',
+					summary: 'Download ready',
+					detail: 'QR codes are ready to download.'
+				});
 			})
 		);
 	}

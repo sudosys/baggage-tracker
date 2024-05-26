@@ -21,9 +21,12 @@ export class TrackBaggagesByFlightComponent {
 
 		this.inProgress = true;
 
-		this.btService.trackBaggagesByFlight(this.flightNumber).subscribe((response) => {
-			this.userBaggageInformation = response;
-			this.inProgress = false;
+		this.btService.trackBaggagesByFlight(this.flightNumber).subscribe({
+			error: () => (this.inProgress = false),
+			next: (response) => {
+				this.userBaggageInformation = response;
+				this.inProgress = false;
+			}
 		});
 	}
 

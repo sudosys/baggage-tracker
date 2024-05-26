@@ -15,9 +15,12 @@ export class ActiveFlightsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.inProgress = true;
-		this.flightService.getActiveFlights().subscribe((response) => {
-			this.activeFlights = response.activeFlights ?? [];
-			this.inProgress = false;
+		this.flightService.getActiveFlights().subscribe({
+			error: () => (this.inProgress = false),
+			next: (response) => {
+				this.activeFlights = response.activeFlights ?? [];
+				this.inProgress = false;
+			}
 		});
 	}
 }
