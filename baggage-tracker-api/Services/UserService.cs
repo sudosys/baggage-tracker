@@ -5,7 +5,7 @@ using BaggageTrackerApi.Extensions;
 
 namespace BaggageTrackerApi.Services;
 
-public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMapper mapper, PasswordGenerator passwordGenerator)
+public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMapper mapper)
 {
     public IEnumerable<UserDto> GetUsers(bool passengersOnly) =>
         baggageTrackerDbContext.Users

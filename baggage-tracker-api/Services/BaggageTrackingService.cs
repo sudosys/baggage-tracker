@@ -131,7 +131,7 @@ public class BaggageTrackingService(
 
         if (!ubcProcessor.ValidateUbc(ubc))
         {
-            return new QrCodeScanResponse(null, QrCodeScanResult.CodeInvalid);
+            return new QrCodeScanResponse(null, null, QrCodeScanResult.CodeInvalid);
         }
 
         var user = baggageTrackerDbContext.Users.SingleOrDefault(u => u.Id == ubc.UserId);
@@ -140,10 +140,13 @@ public class BaggageTrackingService(
         if (baggage != null && (requestedUser.Id == user?.Id 
                                || requestedUser is { Role: UserRole.Personnel }))
         {
-            return new QrCodeScanResponse(mapper.Map<BaggageDto>(baggage), QrCodeScanResult.Success);
+            return new QrCodeScanResponse(
+                mapper.Map<BaggageDto>(baggage),
+                mapper.Map<UserDto>(user),
+                QrCodeScanResult.Success);
         }
 
-        return new QrCodeScanResponse(null, QrCodeScanResult.NotOwnedByPassenger);
+        return new QrCodeScanResponse(null, null, QrCodeScanResult.NotOwnedByPassenger);
     }
     
     private Baggage? IsBaggageOwner(long? userId, Guid baggageId) => 
