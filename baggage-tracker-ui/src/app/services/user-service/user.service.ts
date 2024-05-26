@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import {
 	AuthenticationRequest,
-	AuthenticationResponse,
 	AuthenticationStatus,
 	BaggageTrackerClient,
 	UserSlimDto
 } from '../../../../open-api/bt-api.client';
-import { catchError, of, tap } from 'rxjs';
-import { MessageService } from 'primeng/api';
+import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { Page } from '../../enums/page.enum';
 
@@ -17,8 +15,7 @@ import { Page } from '../../enums/page.enum';
 export class UserService {
 	constructor(
 		private btClient: BaggageTrackerClient,
-		private router: Router,
-		private messageService: MessageService
+		private router: Router
 	) {}
 
 	static readonly tokenKey = 'token';
@@ -33,14 +30,6 @@ export class UserService {
 		} as AuthenticationRequest;
 
 		return this.btClient.authenticate(authRequest).pipe(
-			catchError((errorResponse: AuthenticationResponse) => {
-				this.messageService.add({
-					severity: 'error',
-					summary: 'Error',
-					detail: 'Authentication failed'
-				});
-				return of(errorResponse);
-			}),
 			tap(async (response) => {
 				if (response.status == AuthenticationStatus.Success) {
 					this.attachUserToContext(response.token!, response.user!);
