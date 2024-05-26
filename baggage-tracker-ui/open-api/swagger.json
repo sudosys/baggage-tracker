@@ -785,6 +785,9 @@
           "baggage": {
             "$ref": "#/components/schemas/BaggageDto"
           },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          },
           "scanResult": {
             "$ref": "#/components/schemas/QrCodeScanResult"
           }
@@ -815,6 +818,41 @@
           },
           "username": {
             "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "activeFlight": {
+            "$ref": "#/components/schemas/Flight"
+          },
+          "baggages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Baggage"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "maxLength": 150,
             "minLength": 0,
             "type": "string",
             "nullable": true

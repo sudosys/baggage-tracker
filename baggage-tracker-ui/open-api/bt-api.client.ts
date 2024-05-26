@@ -1371,6 +1371,7 @@ export interface IProblemDetails {
 
 export class QrCodeScanResponse implements IQrCodeScanResponse {
     baggage?: BaggageDto;
+    user?: UserDto;
     scanResult?: QrCodeScanResult;
 
     constructor(data?: IQrCodeScanResponse) {
@@ -1385,6 +1386,7 @@ export class QrCodeScanResponse implements IQrCodeScanResponse {
     init(_data?: any) {
         if (_data) {
             this.baggage = _data["baggage"] ? BaggageDto.fromJS(_data["baggage"]) : <any>undefined;
+            this.user = _data["user"] ? UserDto.fromJS(_data["user"]) : <any>undefined;
             this.scanResult = _data["scanResult"];
         }
     }
@@ -1399,6 +1401,7 @@ export class QrCodeScanResponse implements IQrCodeScanResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["baggage"] = this.baggage ? this.baggage.toJSON() : <any>undefined;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
         data["scanResult"] = this.scanResult;
         return data;
     }
@@ -1406,6 +1409,7 @@ export class QrCodeScanResponse implements IQrCodeScanResponse {
 
 export interface IQrCodeScanResponse {
     baggage?: BaggageDto;
+    user?: UserDto;
     scanResult?: QrCodeScanResult;
 }
 
@@ -1475,6 +1479,70 @@ export interface IUser {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
+    role?: UserRole;
+    activeFlight?: Flight;
+    baggages?: Baggage[] | undefined;
+}
+
+export class UserDto implements IUserDto {
+    id?: number;
+    username?: string | undefined;
+    fullName?: string | undefined;
+    role?: UserRole;
+    activeFlight?: Flight;
+    baggages?: Baggage[] | undefined;
+
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.username = _data["username"];
+            this.fullName = _data["fullName"];
+            this.role = _data["role"];
+            this.activeFlight = _data["activeFlight"] ? Flight.fromJS(_data["activeFlight"]) : <any>undefined;
+            if (Array.isArray(_data["baggages"])) {
+                this.baggages = [] as any;
+                for (let item of _data["baggages"])
+                    this.baggages!.push(Baggage.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["username"] = this.username;
+        data["fullName"] = this.fullName;
+        data["role"] = this.role;
+        data["activeFlight"] = this.activeFlight ? this.activeFlight.toJSON() : <any>undefined;
+        if (Array.isArray(this.baggages)) {
+            data["baggages"] = [];
+            for (let item of this.baggages)
+                data["baggages"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IUserDto {
+    id?: number;
+    username?: string | undefined;
+    fullName?: string | undefined;
     role?: UserRole;
     activeFlight?: Flight;
     baggages?: Baggage[] | undefined;
