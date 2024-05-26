@@ -55,7 +55,7 @@ public class FlightService(BaggageTrackerDbContext baggageTrackerDbContext, Pass
 
             if (flightExist)
             {
-                throw new FlightAlreadyExistsException($"{flightManifest.FlightNumber} is already registered.");
+                throw new FlightAlreadyExistsException(flightManifest.FlightNumber);
             }
         }
     }

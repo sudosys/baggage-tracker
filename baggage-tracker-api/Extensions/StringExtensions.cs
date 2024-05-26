@@ -10,11 +10,6 @@ public static class StringExtensions
         var bytes = Encoding.UTF8.GetBytes(input);
         var hashed = SHA256.HashData(bytes);
 
-        if (hashed == null)
-        {
-            throw new ArgumentNullException();
-        }
-
         var hashString = new StringBuilder();
 
         foreach (var @byte in hashed)

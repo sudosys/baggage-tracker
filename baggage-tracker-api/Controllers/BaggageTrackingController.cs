@@ -2,6 +2,7 @@ using BaggageTrackerApi.Attributes;
 using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Exceptions;
 using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,7 @@ public class BaggageTrackingController(BaggageTrackingService baggageTrackingSer
             var baggages = baggageTrackingService.GetBaggageStatus(userId);
             return Ok(baggages);
         }
-        catch (Exception e)
+        catch (ApiDomainException e)
         {
             return BadRequest(new PlainResponse(e.Message));
         }

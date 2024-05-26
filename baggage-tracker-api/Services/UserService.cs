@@ -1,6 +1,7 @@
 using AutoMapper;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Exceptions;
 using BaggageTrackerApi.Extensions;
 
 namespace BaggageTrackerApi.Services;
@@ -38,12 +39,12 @@ public class UserService(BaggageTrackerDbContext baggageTrackerDbContext, IMappe
 
         if (user == null)
         {
-            throw new NullReferenceException($"User with the id {userId} could not be found.");
+            throw new UserDoesNotExistException(userId);
         }
 
         if (user.Role == UserRole.Personnel)
         {
-            throw new InvalidOperationException($"Users with the role of {nameof(UserRole.Personnel)} can't be deleted.");
+            throw new PersonnelCanNotBeDeletedException();
         }
 
         baggageTrackerDbContext.Users.Remove(user);

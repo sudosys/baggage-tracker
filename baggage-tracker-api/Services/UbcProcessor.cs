@@ -1,3 +1,4 @@
+using BaggageTrackerApi.Exceptions;
 using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models.QrCode;
 
@@ -6,7 +7,7 @@ namespace BaggageTrackerApi.Services;
 public class UbcProcessor(BaggageTrackerDbContext baggageTrackerDbContext)
 {
     public static readonly char UbcSeparator = '$';
-    private static readonly byte UbcFragmentQuantity = 3;
+    public static readonly byte UbcFragmentQuantity = 3;
     
     public UniqueBaggageCode ParseUbc(string qrCodeData)
     {
@@ -14,8 +15,7 @@ public class UbcProcessor(BaggageTrackerDbContext baggageTrackerDbContext)
 
         if (fragments.Length != UbcFragmentQuantity)
         {
-            throw new Exception(
-                $"Faulty UBC code: Expected {UbcFragmentQuantity} fragments but found {fragments.Length}.");
+            throw new FaultyUbcCodeException(fragments.Length);
         }
 
         return new UniqueBaggageCode(

@@ -2,6 +2,7 @@ using AutoMapper;
 using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Entities.DTOs;
 using BaggageTrackerApi.Enums;
+using BaggageTrackerApi.Exceptions;
 using BaggageTrackerApi.Extensions;
 using BaggageTrackerApi.Models;
 
@@ -37,7 +38,7 @@ public class BaggageTrackingService(
     {
         if (!baggageTrackerDbContext.DoesFlightExist(flightNumber))
         {
-            throw new Exception($"Flight {flightNumber} does not exist.");
+            throw new FlightDoesNotExistException(flightNumber);
         }
 
         var usersByFlightNumber = baggageTrackerDbContext.Users
@@ -58,19 +59,19 @@ public class BaggageTrackingService(
 
         if (user == null)
         {
-            throw new Exception($"User with id {userId} does not exist");
+            throw new UserDoesNotExistException(userId);
         }
         
         if (user.Role == UserRole.Personnel)
         {
-            throw new Exception($"{nameof(UserRole.Personnel)} can't query baggage status.");
+            throw new PersonnelCanNotQueryBaggageStatusException();
         }
 
         var flightNumber = user.ActiveFlight?.FlightNumber;
 
         if (flightNumber == null)
         {
-            throw new Exception("Active flight could not be found.");
+            throw new ActiveFlightCouldNotBeFoundException();
         }
 
         var baggages = baggageTrackerDbContext.Baggages
@@ -89,7 +90,7 @@ public class BaggageTrackingService(
         var isBaggageOwner = IsBaggageOwner(user.Id, baggageId) != null;
         if (user is { Role: UserRole.Passenger } && !isBaggageOwner)
         {
-            throw new Exception("Baggage not owned by the passenger");
+            throw new BaggageNotOwnedByPassengerException();
         }
         
         var baggage = baggageTrackerDbContext.Baggages
@@ -97,12 +98,12 @@ public class BaggageTrackingService(
 
         if (baggage == null)
         {
-            throw new Exception($"Baggage with id '{baggageId}' does not exist");
+            throw new BaggageDoesNotExistException(baggageId.ToString());
         }
 
         if (baggage.BaggageStatus == newStatus)
         {
-            throw new Exception($"Baggage with id '{baggageId}' already marked as '{newStatus}'");
+            throw new BaggageAlreadyMarkedWithSameStatusException(baggageId.ToString(), newStatus);
         }
 
         baggage.BaggageStatus = newStatus;
@@ -114,14 +115,12 @@ public class BaggageTrackingService(
     {
         if (user.Role == UserRole.Passenger && !PassengerAllowedStatuses.Contains(newStatus))
         {
-            throw new Exception(
-                $"Passenger can't set a baggage status other than '{string.Join(',', PassengerAllowedStatuses)}'");
+            throw new PassengerCanNotSetBaggageStatusException();
         }
         
         if (user.Role == UserRole.Personnel && !PersonnelAllowedStatuses.Contains(newStatus))
         {
-            throw new Exception(
-                $"Personnel can't set the baggage status '{newStatus}'");
+            throw new PersonnelCanNotSetBaggageStatusException(newStatus);
         }
     }
 
