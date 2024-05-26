@@ -2,56 +2,63 @@
 	<h3>Track Baggages</h3>
 
 	<div class="d-flex flex-column align-items-center min-h-0">
-		@if (!returnedInformation) {
-			<input
-				type="text"
-				placeholder="Enter flight number"
-				[(ngModel)]="flightNumber"
-				pInputText
-			/>
-
-			<p-button
-				class="mt-2"
-				label="Fetch Flight Data"
-				[disabled]="!flightNumber"
-				(onClick)="onClickFetchFlightData()"
-			></p-button>
+		@if (!inProgress && userBaggageInformation.length == 0) {
+			<ng-container *ngTemplateOutlet="inputTemplate"></ng-container>
+		} @else if (inProgress) {
+			<p-progressSpinner></p-progressSpinner>
 		} @else {
-			<h4>
-				For Flight: {{ userBaggageInformation[0].activeFlight?.flightNumber }}
-			</h4>
-			<div class="passenger-container w-100 p-2 overflow-auto">
-				<p-accordion>
-					@for (
-						baggageInformation of userBaggageInformation;
-						track baggageInformation
-					) {
-						<p-accordionTab [header]="baggageInformation.fullName">
-							<p-table [value]="baggageInformation.baggages ?? []">
-								<ng-template pTemplate="header">
-									<tr>
-										<td class="fw-bolder">Baggage Name</td>
-										<td class="fw-bolder">Status</td>
-									</tr>
-								</ng-template>
-								<ng-template pTemplate="body" let-baggage>
-									<tr>
-										<td>{{ baggage.baggageName }}</td>
-										<td>
-											{{
-												toTitleCase(
-													baggage.baggageStatus?.toString() ??
-														''
-												)
-											}}
-										</td>
-									</tr>
-								</ng-template>
-							</p-table>
-						</p-accordionTab>
-					}
-				</p-accordion>
-			</div>
+			<ng-container *ngTemplateOutlet="flightDataTemplate"></ng-container>
 		}
 	</div>
 </section>
+
+<ng-template #inputTemplate>
+	<input
+		type="text"
+		placeholder="Enter flight number"
+		[(ngModel)]="flightNumber"
+		pInputText
+	/>
+
+	<p-button
+		class="mt-2"
+		label="Fetch Flight Data"
+		[disabled]="!flightNumber"
+		(onClick)="onClickFetchFlightData()"
+	></p-button>
+</ng-template>
+
+<ng-template #flightDataTemplate>
+	<h4>For Flight: {{ userBaggageInformation[0].activeFlight?.flightNumber }}</h4>
+	<div class="passenger-container w-100 p-2 overflow-auto">
+		<p-accordion>
+			@for (
+				baggageInformation of userBaggageInformation;
+				track baggageInformation
+			) {
+				<p-accordionTab [header]="baggageInformation.fullName">
+					<p-table [value]="baggageInformation.baggages ?? []">
+						<ng-template pTemplate="header">
+							<tr>
+								<td class="fw-bolder">Baggage Name</td>
+								<td class="fw-bolder">Status</td>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-baggage>
+							<tr>
+								<td>{{ baggage.baggageName }}</td>
+								<td>
+									{{
+										toTitleCase(
+											baggage.baggageStatus?.toString() ?? ''
+										)
+									}}
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</p-accordionTab>
+			}
+		</p-accordion>
+	</div>
+</ng-template>

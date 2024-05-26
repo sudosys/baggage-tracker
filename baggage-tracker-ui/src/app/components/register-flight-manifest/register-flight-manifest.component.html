@@ -2,9 +2,9 @@
 	<h3>Register Flight Manifest</h3>
 
 	<div class="p-2 d-flex flex-column align-items-center">
-		@if (!processInProgress && !manifestFile) {
+		@if (!inProgress && !this.flightService.fileDownload()) {
 			<ng-container *ngTemplateOutlet="uploadTemplate"></ng-container>
-		} @else if (!processInProgress && manifestFile) {
+		} @else if (!inProgress && this.flightService.fileDownload()) {
 			<ng-container *ngTemplateOutlet="manifestDownload"></ng-container>
 		} @else {
 			<p-progressSpinner></p-progressSpinner>
@@ -63,7 +63,11 @@
 
 <ng-template #manifestDownload>
 	<span>Download:</span>
-	<a class="mt-1" [download]="manifestFile?.name" [href]="manifestFile?.objectUrl">
-		{{ manifestFile?.name }}
+	<a
+		class="mt-1"
+		[download]="flightService.fileDownload()?.name"
+		[href]="flightService.fileDownload()?.objectUrl"
+	>
+		{{ flightService.fileDownload()?.name }}
 	</a>
 </ng-template>

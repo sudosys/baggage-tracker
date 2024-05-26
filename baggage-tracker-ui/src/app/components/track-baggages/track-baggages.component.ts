@@ -12,10 +12,17 @@ export class TrackBaggagesComponent implements OnInit {
 	constructor(private btService: BaggageTrackingService) {}
 
 	baggageInfo: BaggageInfoResponse | undefined;
+	inProgress: boolean = false;
 
 	ngOnInit(): void {
+		this.fetchBaggageInformation();
+	}
+
+	private fetchBaggageInformation() {
+		this.inProgress = true;
 		this.btService.trackBaggages(UserService.userInfo?.id).subscribe((response) => {
 			this.baggageInfo = response;
+			this.inProgress = false;
 		});
 	}
 

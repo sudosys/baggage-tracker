@@ -23,10 +23,14 @@
 			}
 		</div>
 
-		<p-button
-			class="mt-3 align-self-center"
-			label="Login"
-			(onClick)="onClickLogin()"
-		/>
+		@if (!inProgress) {
+			<p-button
+				class="mt-3 align-self-center"
+				label="Login"
+				(onClick)="onClickLogin()"
+			/>
+		} @else {
+			<p-progressSpinner></p-progressSpinner>
+		}
 	</form>
 </section>

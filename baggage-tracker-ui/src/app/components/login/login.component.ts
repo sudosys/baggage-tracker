@@ -17,6 +17,8 @@ export class LoginComponent implements OnInit {
 
 	loginForm: FormGroup<FormOf<AuthenticationRequest>>;
 
+	inProgress = false;
+
 	protected readonly Object = Object;
 
 	ngOnInit(): void {
@@ -31,9 +33,10 @@ export class LoginComponent implements OnInit {
 			return;
 		}
 
+		this.inProgress = true;
 		this.userService
 			.login(this.loginForm.value.username!, this.loginForm.value.password!)
-			.subscribe();
+			.subscribe(() => (this.inProgress = false));
 	}
 
 	private triggerValidation(): void {

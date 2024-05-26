@@ -10,6 +10,7 @@ export class GenerateQrCodeComponent implements OnDestroy {
 	constructor(protected btService: BaggageTrackingService) {}
 
 	protected flightNumber: string;
+	inProgress = false;
 
 	ngOnDestroy(): void {
 		this.disposeFileDownload();
@@ -18,9 +19,10 @@ export class GenerateQrCodeComponent implements OnDestroy {
 	@HostListener('document:keyup.enter', ['$event'])
 	onClickGenerate() {
 		if (!this.flightNumber) return;
+		this.inProgress = true;
 		this.btService
 			.getBaggageQrCodes(this.flightNumber)
-			.subscribe(() => console.log(this.btService.fileDownload()));
+			.subscribe(() => (this.inProgress = false));
 	}
 
 	private disposeFileDownload() {

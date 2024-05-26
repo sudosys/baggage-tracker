@@ -1,7 +1,6 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { FlightService } from '../../services/flight-service/flight.service';
-import { FileDownload } from '../../models/file-download.model';
 
 @Component({
 	selector: 'app-register-flight-manifest',
@@ -9,13 +8,12 @@ import { FileDownload } from '../../models/file-download.model';
 	styleUrl: './register-flight-manifest.component.scss'
 })
 export class RegisterFlightManifestComponent implements OnDestroy {
-	constructor(private flightService: FlightService) {}
+	constructor(protected flightService: FlightService) {}
 
 	@ViewChild('fileUploader') fileUploader: FileUpload;
 
 	uploadedManifests: File[] = [];
-	manifestFile: FileDownload | undefined;
-	processInProgress = false;
+	inProgress = false;
 
 	ngOnDestroy(): void {
 		this.disposeObject();
@@ -26,19 +24,13 @@ export class RegisterFlightManifestComponent implements OnDestroy {
 	}
 
 	async onClickSendManifests() {
-		this.processInProgress = true;
+		this.inProgress = true;
 
 		const registrationResponses$ = await this.flightService.registerFlightManifest(
 			this.uploadedManifests
 		);
 
-		registrationResponses$.subscribe((fileResponse) => {
-			this.manifestFile = <FileDownload>{
-				name: fileResponse.fileName,
-				objectUrl: URL.createObjectURL(fileResponse.data)
-			};
-			this.processInProgress = false;
-		});
+		registrationResponses$.subscribe(() => (this.inProgress = false));
 	}
 
 	onClickRemoveFile(index: number) {
@@ -52,9 +44,10 @@ export class RegisterFlightManifestComponent implements OnDestroy {
 	}
 
 	disposeObject() {
-		if (this.manifestFile) {
-			URL.revokeObjectURL(this.manifestFile.objectUrl);
+		const fileDownload = this.flightService.fileDownload();
+		if (fileDownload) {
+			URL.revokeObjectURL(fileDownload.objectUrl);
 		}
-		this.manifestFile = undefined;
+		this.flightService.fileDownload.set(undefined);
 	}
 }

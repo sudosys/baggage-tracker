@@ -4,24 +4,28 @@
 		<h4 class="m-0 mt-3">{{ baggageInfo?.flightNumber ?? 'Loading...' }}</h4>
 	</div>
 
-	@if (baggageInfo) {
-		<p-table class="p-2 overflow-auto" [value]="baggageInfo.baggages ?? []">
-			<ng-template pTemplate="header">
-				<tr>
-					<td class="fw-bolder">Baggage Name</td>
-					<td class="fw-bolder">Status</td>
-				</tr>
-			</ng-template>
-			<ng-template pTemplate="body" let-baggage>
-				<tr>
-					<td>{{ baggage.baggageName }}</td>
-					<td>
-						{{ toTitleCase(baggage.baggageStatus?.toString() ?? '') }}
-					</td>
-				</tr>
-			</ng-template>
-		</p-table>
+	@if (!inProgress && baggageInfo) {
+		<ng-container *ngTemplateOutlet="baggageTableTemplate"></ng-container>
 	} @else {
 		<p-progressSpinner></p-progressSpinner>
 	}
 </section>
+
+<ng-template #baggageTableTemplate>
+	<p-table class="p-2 overflow-auto" [value]="baggageInfo?.baggages ?? []">
+		<ng-template pTemplate="header">
+			<tr>
+				<td class="fw-bolder">Baggage Name</td>
+				<td class="fw-bolder">Status</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-baggage>
+			<tr>
+				<td>{{ baggage.baggageName }}</td>
+				<td>
+					{{ toTitleCase(baggage.baggageStatus?.toString() ?? '') }}
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</ng-template>

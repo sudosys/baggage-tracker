@@ -11,16 +11,19 @@ export class TrackBaggagesByFlightComponent {
 	constructor(private btService: BaggageTrackingService) {}
 
 	flightNumber: string;
-	returnedInformation = false;
+	inProgress = false;
 
-	userBaggageInformation: User[];
+	userBaggageInformation: User[] = [];
 
 	@HostListener('document:keyup.enter', ['$event'])
 	onClickFetchFlightData() {
 		if (!this.flightNumber) return;
+
+		this.inProgress = true;
+
 		this.btService.trackBaggagesByFlight(this.flightNumber).subscribe((response) => {
 			this.userBaggageInformation = response;
-			this.returnedInformation = true;
+			this.inProgress = false;
 		});
 	}
 
