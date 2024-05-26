@@ -3,7 +3,9 @@ using System.Text;
 using BaggageTrackerApi.Entities;
 using BaggageTrackerApi.Enums;
 using BaggageTrackerApi.Extensions;
+using BaggageTrackerApi.Models;
 using BaggageTrackerApi.Models.Registration;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace BaggageTrackerApi.Services;
@@ -102,4 +104,10 @@ public class FlightService(BaggageTrackerDbContext baggageTrackerDbContext, Pass
 
         return string.Join('.', fragments);
     }
+
+    public async Task<List<ActiveFlight>> GetActiveFlights(CancellationToken cancellationToken) =>
+        await baggageTrackerDbContext.Flights
+            .GroupBy(f => f.FlightNumber)
+            .Select(f => new ActiveFlight(f.Key, f.Count()))
+            .ToListAsync(cancellationToken);
 }
